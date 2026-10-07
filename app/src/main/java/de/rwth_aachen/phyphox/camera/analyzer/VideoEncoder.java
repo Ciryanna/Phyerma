@@ -71,7 +71,7 @@ public class VideoEncoder {
     private int audioTrackIndex = -1;
     private final Object muxerLock = new Object();
 
-    private long segmentStartNanos = 0;
+    private volatile long segmentStartNanos = 0; //first frame's timestamp, already adjusted to the elapsed domain
     private long framesSubmitted = 0;
     private long framesWritten = 0;
     private long packetsSkipped = 0;
@@ -460,7 +460,8 @@ public class VideoEncoder {
                 Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_AUDIO);
                 short[] samples = new short[2048];
                 long samplesFed = 0;
-                long audioStartNanos = -1;
+                long audioBaseSamples = -1; //first sample index that lands on the video timeline
+                long audioBaseNanos = 0;    //pts (ns) of that sample on the shared timeline
                 while (audioThread != null && Thread.currentThread() == audioThread) {
                     int n;
                     try {
@@ -470,13 +471,37 @@ public class VideoEncoder {
                     }
                     if (n <= 0)
                         continue;
-                    if (audioStartNanos < 0)
-                        audioStartNanos = android.os.SystemClock.elapsedRealtimeNanos();
-                    feedAudioCodec(samples, n, samplesFed);
+                    if (segmentStartNanos < 0) {
+                        //Waiting for video frame 0 (the shared timeline origin). Samples read
+                        //while waiting sat in the HAL buffer since the stream started - their
+                        //capture time cannot be reconstructed, so they are discarded wholesale
+                        //rather than fed with a wrong presentation time.
+                        samplesFed += n;
+                        continue;
+                    }
+                    if (audioBaseSamples < 0) {
+                        audioBaseSamples = samplesFed;
+                        long now = android.os.SystemClock.elapsedRealtimeNanos();
+                        long anchor = now;
+                        try {
+                            android.media.AudioTimestamp ats = new android.media.AudioTimestamp();
+                            if (audioRecord.getTimestamp(ats, android.media.AudioTimestamp.TIMEBASE_MONOTONIC) == AudioRecord.SUCCESS) {
+                                //nanoTime is in a vendor-specific domain on some devices, but
+                                //framePosition (HAL frames delivered so far) stays truthful:
+                                //it gives the buffer occupancy, hence the capture time of the
+                                //sample we are about to feed.
+                                long occupancy = Math.max(0, ats.framePosition - samplesFed);
+                                anchor = now - occupancy * 1_000_000_000L / AUDIO_RATE;
+                            }
+                        } catch (Exception ignored) {
+                        }
+                        audioBaseNanos = anchor - segmentStartNanos;
+                    }
+                    feedAudioCodec(samples, n, samplesFed - audioBaseSamples, audioBaseNanos);
                     samplesFed += n;
                 }
                 //EOS once the loop exits (stopAudioTrack cleared the thread reference)
-                feedAudioCodec(null, 0, samplesFed);
+                feedAudioCodec(null, 0, Math.max(0, samplesFed - Math.max(audioBaseSamples, 0)), audioBaseNanos);
             }, "VideoEncoder-Audio");
             audioThread.start();
         } catch (Exception e) {
@@ -487,9 +512,14 @@ public class VideoEncoder {
         }
     }
 
-    private void feedAudioCodec(short[] samples, int count, long samplesBefore) {
+    private void feedAudioCodec(short[] samples, int count, long samplesBefore, long audioBaseNanos) {
         MediaCodec codec = audioCodec;
         if (codec == null)
+            return;
+        //Sample-clock pts on the shared video timeline: audioBaseNanos is the pts of the
+        //first post-frame-0 sample. Pre-video chunks carry negative pts and are skipped.
+        long ptsUs = audioBaseNanos / 1_000 + samplesBefore * 1_000_000L / AUDIO_RATE;
+        if (ptsUs < 0)
             return;
         try {
             int inIndex = codec.dequeueInputBuffer(10000);
@@ -498,8 +528,6 @@ public class VideoEncoder {
                 in.clear();
                 for (int i = 0; i < count; i++)
                     in.putShort(samples[i]);
-                //Sample-clock presentation time, relative to the first fed sample.
-                long ptsUs = samplesBefore * 1_000_000L / AUDIO_RATE;
                 codec.queueInputBuffer(inIndex, 0, count * 2, ptsUs, samples == null ? MediaCodec.BUFFER_FLAG_END_OF_STREAM : 0);
             }
             drainAudio(false);

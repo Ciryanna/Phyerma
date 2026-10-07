@@ -349,13 +349,28 @@ public class SyncAudioTrack {
             takeAnchor(seg, rec);
     }
 
+    //getTimestamp's nanoTime is supposed to be CLOCK_MONOTONIC (= elapsedRealtimeNanos), but
+    //some devices answer in a different domain - on vivo it is off by the phone's total
+    //suspend time (~14 h), which would clamp every anchor to the segment start. Detect the
+    //domain mismatch once per recording and fall back to the reader's own clock; the reader's
+    //scheduling jitter (~10 ms) replaces a completely wrong clock.
+    private static final long TIMESTAMP_DOMAIN_LIMIT_NS = 500_000_000L; //500 ms
+    private boolean timestampDomainBroken = false;
+
     private void takeAnchor(Segment seg, AudioRecord rec) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N || rec == null)
             return;
         AudioTimestamp ts = new AudioTimestamp();
         if (rec.getTimestamp(ts, AudioTimestamp.TIMEBASE_MONOTONIC) != AudioRecord.SUCCESS)
             return;
-        double experimentTime = timeReference.getExperimentTimeFromEvent(ts.nanoTime);
+        long now = android.os.SystemClock.elapsedRealtimeNanos();
+        if (!timestampDomainBroken && Math.abs(now - ts.nanoTime) > TIMESTAMP_DOMAIN_LIMIT_NS) {
+            timestampDomainBroken = true;
+            Log.w("SyncAudioTrack", "AudioTimestamp clock domain mismatch (off by "
+                    + (now - ts.nanoTime) / 1_000_000_000.0 + " s) - anchoring on the reader clock instead.");
+        }
+        long nano = timestampDomainBroken ? now : ts.nanoTime;
+        double experimentTime = timeReference.getExperimentTimeFromEvent(nano);
         synchronized (writeLock) {
             if (seg.lastCaptureFrame >= 0) {
                 long captured = ts.framePosition - seg.lastCaptureFrame;
@@ -365,7 +380,9 @@ public class SyncAudioTrack {
             }
             seg.lastCaptureFrame = ts.framePosition;
             seg.lastAnchorFrames = seg.frames;
-            seg.anchors.add(new Anchor(seg.frames, ts.nanoTime, experimentTime));
+            if (timestampDomainBroken)
+                seg.anchorSource = "elapsedRealtime"; //Raw HAL timestamps unusable on this device
+            seg.anchors.add(new Anchor(seg.frames, nano, experimentTime));
         }
     }
 
