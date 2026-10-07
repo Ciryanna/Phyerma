@@ -38,6 +38,7 @@
             android:name="de.rwth_aachen.phyphox.ExperimentList.ExperimentListActivity"
             android:exported="true"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/splashTheme"
             android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
@@ -90,24 +91,29 @@
         <activity
             android:name="de.rwth_aachen.phyphox.Experiment"
             android:label="@string/title_activity_experiment"
+            android:screenOrientation="portrait"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|mcc|mnc"
             android:windowSoftInputMode="adjustPan"
             android:parentActivityName="de.rwth_aachen.phyphox.ExperimentList.ExperimentListActivity" />
         <activity
             android:name="de.rwth_aachen.phyphox.SettingsActivity.SettingsActivity"
             android:label="@string/settings"
+            android:screenOrientation="portrait"
             android:parentActivityName="de.rwth_aachen.phyphox.ExperimentList.ExperimentListActivity" />
         <activity
-            android:name="de.rwth_aachen.phyphox.device.DevicePageActivity"
+            android:name="de.rwth_aachen.phyphox.device.CalibrationActivity"
             android:label="@string/phyerma_nav_device"
+            android:screenOrientation="portrait"
             android:parentActivityName="de.rwth_aachen.phyphox.ExperimentList.ExperimentListActivity" />
         <activity
             android:name="de.rwth_aachen.phyphox.device.SensorLabActivity"
             android:label="@string/phyerma_nav_sensors"
+            android:screenOrientation="portrait"
             android:parentActivityName="de.rwth_aachen.phyphox.ExperimentList.ExperimentListActivity" />
         <activity
             android:name="de.rwth_aachen.phyphox.device.SensorDetailActivity"
             android:label="@string/phyerma_nav_sensors"
+            android:screenOrientation="portrait"
             android:parentActivityName="de.rwth_aachen.phyphox.device.SensorLabActivity" />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"

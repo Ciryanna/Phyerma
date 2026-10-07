@@ -512,7 +512,28 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <string name="phyerma_lang_chip_en">EN</string>
     <string name="phyerma_lang_chip_auto">Auto</string>
     <string name="phyerma_nav_experiments">Experiments</string>
-    <string name="phyerma_nav_device">Device</string>
+    <string name="rotate_screen">Rotate screen</string>
+    <string name="phyerma_nav_device">Calibration</string>
+    <string name="phyerma_calib_title">Camera timestamp calibration</string>
+    <string name="phyerma_calib_explain">On some phones the camera clock is offset from the sensor clock by a constant amount, shifting video frame times by tens to hundreds of milliseconds. Rest the phone, aim the camera at anything, and tap the body sharply at least 3 times to measure and apply the offset. The value is measured on this device and can be re-measured anytime.</string>
+    <string name="phyerma_calib_start">Start calibration</string>
+    <string name="phyerma_calib_stop">Stop and finish</string>
+    <string name="phyerma_calib_running">Calibrating… tap the phone body at least 3 times (~1 s apart)</string>
+    <string name="phyerma_calib_running_torch">Calibrating… the flash will blink automatically; keep the phone steady on a high-contrast scene</string>
+    <string name="phyerma_calib_no_torch">No flash on this device - falling back to tap calibration (tap the body at least 3 times)</string>
+    <string name="phyerma_calib_torch_fail">Flash unavailable, calibration failed.</string>
+    <string name="phyerma_calib_taps">%1$d taps detected, keep tapping or press stop</string>
+    <string name="phyerma_calib_done">Calibration done (%1$d pairs). Tick the pairs to include, then apply.</string>
+    <string name="phyerma_calib_result">Correction %1$+.1f ms (%2$d pairs, spread %3$d ms)</string>
+    <string name="phyerma_calib_last">Current calibration: %1$+.1f ms · %2$d pairs · %3$s</string>
+    <string name="phyerma_calib_never">Camera timestamps have not been calibrated yet.</string>
+    <string name="phyerma_calib_few_taps">Only %1$d taps detected, need at least 3. Tap harder.</string>
+    <string name="phyerma_calib_no_pairs">Could not pair taps (accel %1$d / frame-shake %2$d). Tap more sharply and retry.</string>
+<string name="phyerma_calib_pairs">Per-pair offsets: %1$s ms</string>
+    <string name="phyerma_calib_scatter">Pair spread %1$d ms is too large to trust. Please retry.</string>
+    <string name="phyerma_calib_need_camera">Camera permission is required to calibrate.</string>
+    <string name="phyerma_calib_no_accel">This device has no accelerometer; cannot calibrate.</string>
+    <string name="phyerma_calib_camera_fail">Camera failed to start: %1$s</string>
     <string name="phyerma_nav_sensors">Sensors</string>
     <string name="phyerma_device_internal">Internal model: %1$s</string>
     <string name="phyerma_field_brand">Brand</string>
@@ -541,4 +562,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <string name="phyerma_source_url">https://github.com/elwina/Phyerma</string>
     <string name="phyerma_privacy_title">Privacy policy</string>
     <string name="phyerma_privacy_body">Phyerma processes sensor data on this phone so you can run physics experiments.\n\n• Sensor readings stay on the device unless you export them, enable remote access, or start an experiment that itself opens a network connection.\n• Remote access is opt-in and serves a local web page on your network. Do not enable it on an untrusted network.\n• Experiments that talk to the network show their own privacy notice first. That notice comes from the experiment author, not from Phyerma.\n• The bundled sensor database is a local snapshot. It does not phone home.\n• Phyerma does not use Google Play Services, Firebase, Crashlytics, or advertising SDKs.\n• Source: https://github.com/elwina/Phyerma</string>
+    <string name="phyerma_calib_edit_hint">Correction (milliseconds)</string>
+    <string name="phyerma_calib_apply">Apply this correction</string>
+    <string name="phyerma_calib_applied">Applied %1$.0f ms.</string>
+    <string name="phyerma_calib_bad_value">Please enter a number in milliseconds.</string>
+    <string name="phyerma_calib_suggest">Suggestion = median of %1$d selected pairs (none ticked = all)</string>
 </resources>

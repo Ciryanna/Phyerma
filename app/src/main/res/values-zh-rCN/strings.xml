@@ -439,7 +439,28 @@
     <string name="phyerma_lang_chip_en">EN</string>
     <string name="phyerma_lang_chip_auto">自动</string>
     <string name="phyerma_nav_experiments">实验</string>
-    <string name="phyerma_nav_device">本机</string>
+    <string name="rotate_screen">旋转屏幕</string>
+    <string name="phyerma_nav_device">校准</string>
+    <string name="phyerma_calib_title">相机时间戳校准</string>
+    <string name="phyerma_calib_explain">部分机型的相机时钟与传感器时钟存在固定偏差，会让视频帧时间与传感器数据错开数十到数百毫秒。把手机放稳、相机对着任意画面，然后清脆敲击机身至少 3 次即可测出偏差并自动应用。每台设备独立测量，可随时重测。</string>
+    <string name="phyerma_calib_start">开始校准</string>
+    <string name="phyerma_calib_stop">停止并完成</string>
+    <string name="phyerma_calib_running">校准中……请敲击机身至少 3 次（间隔约 1 秒）</string>
+    <string name="phyerma_calib_running_torch">校准中……闪光灯会自动闪烁，请保持稳定并对准一个有亮暗对比的画面</string>
+    <string name="phyerma_calib_no_torch">此设备没有闪光灯，将用敲击法校准（敲机身至少 3 次）</string>
+    <string name="phyerma_calib_torch_fail">闪光灯不可用，校准失败。</string>
+    <string name="phyerma_calib_taps">已检测到 %1$d 次敲击，继续或点停止</string>
+    <string name="phyerma_calib_done">校准完成（%1$d 对）。勾选要纳入的配对后确认应用。</string>
+    <string name="phyerma_calib_result">修正量 %1$+.1f ms（%2$d 对样本，离散 %3$d ms）</string>
+    <string name="phyerma_calib_last">当前校准：%1$+.1f ms · %2$d 对样本 · %3$s</string>
+    <string name="phyerma_calib_never">尚未校准过相机时间戳。</string>
+    <string name="phyerma_calib_few_taps">只检测到 %1$d 次敲击，至少需 3 次。请更用力地敲。</string>
+    <string name="phyerma_calib_no_pairs">敲击配对失败（加速度 %1$d 次 / 画面抖动 %2$d 次）。请敲得更干脆些重试。</string>
+<string name="phyerma_calib_pairs">各对偏差：%1$s ms</string>
+    <string name="phyerma_calib_scatter">配对离散度 %1$d ms 过大，结果不可信，请重试。</string>
+    <string name="phyerma_calib_need_camera">需要相机权限才能校准。</string>
+    <string name="phyerma_calib_no_accel">此设备没有加速度计，无法校准。</string>
+    <string name="phyerma_calib_camera_fail">相机启动失败：%1$s</string>
     <string name="phyerma_nav_sensors">传感器</string>
     <string name="phyerma_device_internal">内部型号：%1$s</string>
     <string name="phyerma_field_brand">品牌</string>
@@ -468,4 +489,9 @@
     <string name="phyerma_source_url">https://github.com/elwina/Phyerma</string>
     <string name="phyerma_privacy_title">隐私政策</string>
     <string name="phyerma_privacy_body">Phyerma 在本机处理传感器数据，供你做物理实验。\n\n• 传感器读数默认留在本机。只有你导出、打开远程访问，或运行本身会联网的实验时，数据才会离开手机。\n• 远程访问需你主动开启，只在局域网提供网页。请勿在不信任的网络上打开。\n• 会联网的实验会先显示实验作者自己的隐私说明，那不是 Phyerma 的政策。\n• 随包装的传感器库是本地快照，不会回传。\n• Phyerma 不使用 Google Play 服务、Firebase、Crashlytics 或广告 SDK。\n• 源码：https://github.com/elwina/Phyerma</string>
+    <string name="phyerma_calib_edit_hint">修正值（毫秒）</string>
+    <string name="phyerma_calib_apply">应用此修正</string>
+    <string name="phyerma_calib_applied">已应用 %1$.0f ms 修正。</string>
+    <string name="phyerma_calib_bad_value">请输入一个数字（毫秒）。</string>
+    <string name="phyerma_calib_suggest">建议值取 %1$d 对的中位数（可全不勾=全体中位数）</string>
 </resources>

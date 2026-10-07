@@ -38,6 +38,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import de.rwth_aachen.phyphox.device.CalibrationStore
 import java.io.Serializable
 import java.util.Vector
 import java.util.concurrent.ExecutionException
@@ -83,6 +84,7 @@ class CameraInput : Serializable, AnalyzingOpenGLRenderer.ExposureStatisticsList
     var videoInput: VideoInput? = null
 
     @Transient var analyzingOpenGLRenderer: AnalyzingOpenGLRenderer? = null
+    @Transient private var cameraBiasNanos: Long = 0 //measured on this device via the calibration page
 
     //Focus distance in meters as set by the "focus_distance" option of the locked attribute.
     //Zero denotes infinity and null means that the autofocus stays enabled.
@@ -177,6 +179,7 @@ class CameraInput : Serializable, AnalyzingOpenGLRenderer.ExposureStatisticsList
 
     fun startCameraFromProvider(lifecycleOwner: LifecycleOwner, application: Application,  listener: OnCameraReadyListener) {
         this.lifecycleOwner = lifecycleOwner
+        cameraBiasNanos = CalibrationStore.cameraBiasNs(application)
         cameraProviderListenableFuture = ProcessCameraProvider.getInstance(application)
 
         cameraProviderListenableFuture.addListener({
@@ -236,7 +239,9 @@ class CameraInput : Serializable, AnalyzingOpenGLRenderer.ExposureStatisticsList
                 this,
                 dataLock,
                 cameraSettingState,
-                this)
+                this).also {
+                it.calibrationOffsetNanos = cameraBiasNanos
+            }
         }
 
         val cameraSelector = CameraHelper.cameraLensToSelector(cameraSettingState.value.currentLens)

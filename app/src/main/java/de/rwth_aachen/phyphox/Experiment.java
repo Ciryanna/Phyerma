@@ -1619,6 +1619,15 @@ public class Experiment extends AppCompatActivity implements View.OnClickListene
             return true;
         }
 
+        //The app never rotates by sensor; this menu item is the only rotation control.
+        if (id == R.id.action_rotate) {
+            int cur = getResources().getConfiguration().orientation;
+            setRequestedOrientation(cur == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+                    ? android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                    : android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            return true;
+        }
+
         int highlightLink = -1;
         if (id == R.id.action_link1) {
             highlightLink = 0;

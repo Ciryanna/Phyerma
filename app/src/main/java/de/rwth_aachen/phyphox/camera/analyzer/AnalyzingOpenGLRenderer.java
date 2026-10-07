@@ -73,6 +73,9 @@ public class AnalyzingOpenGLRenderer implements Preview.SurfaceProvider, Surface
     ExperimentTimeReference experimentTimeReference;
     DataBuffer timeOutput;
     long timeAdjustment = 0;
+    //Per-device camera-clock-domain offset measured by the calibration page; added to every
+    //frame timestamp so frames land on the sensor/elapsed timeline.
+    public volatile long calibrationOffsetNanos = 0;
     DataBuffer shutterSpeedOutput, apertureOutput, isoOutput;
 
     Long lastPreviewFrame = 0L;
@@ -357,13 +360,13 @@ public class AnalyzingOpenGLRenderer implements Preview.SurfaceProvider, Surface
                         return;
 
                     long reportedTime = cameraSurfaceTexture.getTimestamp();
-                    long timestampDelta = reportedTime + timeAdjustment - SystemClock.elapsedRealtimeNanos();
+                    long timestampDelta = reportedTime + timeAdjustment + calibrationOffsetNanos - SystemClock.elapsedRealtimeNanos();
                     if (Math.abs(timestampDelta) > 60e9) {
                         //The reported time stamp is off by a whole minute. This is nonsense. The reported time is not even trying to relate to uptime, so we need to adjust the timestamps.
                         timeAdjustment -= timestampDelta;
                         Log.w("AnalyzingOpenGLRenderer", "timestampDelta too large: " + timestampDelta + ", timeAdjustment: " + timeAdjustment);
                     }
-                    double t = experimentTimeReference.getExperimentTimeFromEvent(reportedTime + timeAdjustment);
+                    double t = experimentTimeReference.getExperimentTimeFromEvent(reportedTime + timeAdjustment + calibrationOffsetNanos);
                     RectF passepartout = state.getCameraPassepartout();
 
                     boolean dataNeedsToBeWrittenToBuffers = true;
@@ -420,7 +423,7 @@ public class AnalyzingOpenGLRenderer implements Preview.SurfaceProvider, Surface
                                 videoSegmentNanos.clear();
                             }
                         }
-                        if (videoEncoder.isRecording() && videoEncoder.encodeFrame(camMatrix, reportedTime + timeAdjustment)) {
+                        if (videoEncoder.isRecording() && videoEncoder.encodeFrame(camMatrix, reportedTime + timeAdjustment + calibrationOffsetNanos)) {
                             //Append the experiment time only for frames the muxer actually took.
                             //Encoders may drop input frames when busy, so row N in the buffer must
                             //equal video frame N in the MP4 - not the Nth submitted frame.

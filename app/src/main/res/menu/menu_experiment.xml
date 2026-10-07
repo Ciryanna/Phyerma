@@ -17,6 +17,8 @@
 
     <item android:id="@+id/action_description" android:title="@string/show_description" android:icon="@drawable/info"
         android:orderInCategory="30" app:showAsAction="never" />
+    <item android:id="@+id/action_rotate" android:title="@string/rotate_screen"
+        android:orderInCategory="36" app:showAsAction="never" />
     <item android:id="@+id/action_link1" android:title="@string/show_description" android:orderInCategory="31" app:showAsAction="never" />
     <item android:id="@+id/action_link2" android:title="@string/show_description" android:orderInCategory="32" app:showAsAction="never" />
     <item android:id="@+id/action_link3" android:title="@string/show_description" android:orderInCategory="33" app:showAsAction="never" />

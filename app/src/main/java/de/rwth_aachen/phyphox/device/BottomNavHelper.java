@@ -44,7 +44,7 @@ public final class BottomNavHelper {
                 return true;
             }
             if (id == R.id.nav_device) {
-                activity.startActivity(new Intent(activity, DevicePageActivity.class));
+                activity.startActivity(new Intent(activity, CalibrationActivity.class));
                 if (!(activity instanceof ExperimentListActivity))
                     activity.finish();
                 return true;
