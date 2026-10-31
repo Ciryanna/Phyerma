@@ -47,6 +47,23 @@ public class VideoInput implements Serializable {
     private transient Segment current = null;
     public transient String error = null;
 
+    //What the camera-clock calibration added to this run's frame times; filled in by CameraInput
+    //whenever the camera (re)starts and written to video.json, because it changes the numbers a
+    //reader of the export sees.
+    private transient String clockLens = null;
+    private transient long clockBiasNs = 0;
+    private transient boolean clockCalibrated = false;
+    private transient long clockCalibratedAtMs = 0;
+    private transient int clockSamples = 0;
+
+    public synchronized void setCameraClockCalibration(String lens, long biasNs, boolean calibrated, long calibratedAtMs, int samples) {
+        clockLens = lens;
+        clockBiasNs = biasNs;
+        clockCalibrated = calibrated;
+        clockCalibratedAtMs = calibratedAtMs;
+        clockSamples = samples;
+    }
+
     private static class Segment {
         int index;
         File file;
@@ -117,7 +134,7 @@ public class VideoInput implements Serializable {
         if (candidate >= 0)
             return candidate;
         //The timestamp sits outside every START interval - e.g. a camera clock whose domain is
-        //slightly behind elapsedRealtime (vivo, ~100 ms). Extrapolate from the first mapping
+        //behind elapsedRealtime by some uncorrected offset (see CalibrationStore). Extrapolate from the first mapping
         //instead of clamping to the last event the way getExperimentTimeFromEvent would.
         if (!maps.isEmpty()) {
             ExperimentTimeReference.TimeMapping f = maps.get(0);
@@ -256,6 +273,14 @@ public class VideoInput implements Serializable {
             root.put("fpsTarget", fps);
             root.put("audio", withAudio);
             root.put("timeBase", "elapsedRealtimeNanos");
+            JSONObject clock = new JSONObject();
+            clock.put("calibrated", clockCalibrated);
+            clock.put("lens", clockLens == null ? JSONObject.NULL : clockLens);
+            clock.put("biasNs", clockBiasNs);
+            clock.put("calibratedAtMs", clockCalibratedAtMs);
+            clock.put("samples", clockSamples);
+            clock.put("note", "biasNs is already added to every frame timestamp: frameTimes and the MP4 presentation times include it");
+            root.put("cameraClock", clock);
 
             JSONArray segs = new JSONArray();
             for (Segment seg : finished) {

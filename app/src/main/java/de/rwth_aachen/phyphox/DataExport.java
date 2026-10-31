@@ -25,6 +25,7 @@ import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import de.rwth_aachen.phyphox.device.ProfileMeta;
 import de.rwth_aachen.phyphox.helper.DataExportUtility;
 import de.rwth_aachen.phyphox.helper.FileNameFormat;
 
@@ -213,6 +214,18 @@ public class DataExport implements Serializable {
         }
         zstream.write(data.toString().getBytes(StandardCharsets.UTF_8));
         zstream.closeEntry();
+
+        //The calibration tab's ticked items: device facts and measured corrections of this phone.
+        java.util.Map<String, String> profile = ProfileMeta.collect(ctx);
+        if (!profile.isEmpty()) {
+            zstream.putNextEntry(new ZipEntry("meta/calibration.csv"));
+            StringBuilder cal = new StringBuilder("\"property\"" + SEPARATOR + "\"value\"\n");
+            for (java.util.Map.Entry<String, String> row : profile.entrySet())
+                cal.append("\"").append(row.getKey()).append("\"").append(SEPARATOR)
+                        .append("\"").append(row.getValue().replace("\"", "\"\"")).append("\"\n");
+            zstream.write(cal.toString().getBytes(StandardCharsets.UTF_8));
+            zstream.closeEntry();
+        }
 
         zstream.putNextEntry(new ZipEntry("meta/time.csv"));
         zstream.write(("\"event\"" + SEPARATOR + "\"experiment time\"" + SEPARATOR + "\"system time\"" + SEPARATOR + "\"system time text\"\n").getBytes(StandardCharsets.UTF_8));

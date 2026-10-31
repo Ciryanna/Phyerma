@@ -84,7 +84,7 @@ class CameraInput : Serializable, AnalyzingOpenGLRenderer.ExposureStatisticsList
     var videoInput: VideoInput? = null
 
     @Transient var analyzingOpenGLRenderer: AnalyzingOpenGLRenderer? = null
-    @Transient private var cameraBiasNanos: Long = 0 //measured on this device via the calibration page
+    @Transient private var appContext: Application? = null //for reading the camera-clock calibration measured on the calibration tab
 
     //Focus distance in meters as set by the "focus_distance" option of the locked attribute.
     //Zero denotes infinity and null means that the autofocus stays enabled.
@@ -179,7 +179,7 @@ class CameraInput : Serializable, AnalyzingOpenGLRenderer.ExposureStatisticsList
 
     fun startCameraFromProvider(lifecycleOwner: LifecycleOwner, application: Application,  listener: OnCameraReadyListener) {
         this.lifecycleOwner = lifecycleOwner
-        cameraBiasNanos = CalibrationStore.cameraBiasNs(application)
+        appContext = application
         cameraProviderListenableFuture = ProcessCameraProvider.getInstance(application)
 
         cameraProviderListenableFuture.addListener({
@@ -233,16 +233,32 @@ class CameraInput : Serializable, AnalyzingOpenGLRenderer.ExposureStatisticsList
         }
     }
 
+    //The camera-clock offset belongs to one lens, so it is looked up again whenever the camera
+    //(re)starts - including after the lens was switched. The same value is handed to the video
+    //sidecar so an export says what was added to its frame times.
+    private fun applyCameraClockCalibration() {
+        val ctx = appContext ?: return
+        val lens = CalibrationStore.lensKey(cameraSettingState.value.currentLens)
+        val bias = CalibrationStore.cameraBiasNs(ctx, lens)
+        analyzingOpenGLRenderer?.calibrationOffsetNanos = bias
+        videoInput?.setCameraClockCalibration(
+            lens,
+            bias,
+            CalibrationStore.hasCalibration(ctx, lens),
+            CalibrationStore.calibratedAtMs(ctx, lens),
+            CalibrationStore.sampleCount(ctx, lens)
+        )
+    }
+
     private fun startCamera() {
         if(analyzingOpenGLRenderer == null){
             analyzingOpenGLRenderer = AnalyzingOpenGLRenderer(
                 this,
                 dataLock,
                 cameraSettingState,
-                this).also {
-                it.calibrationOffsetNanos = cameraBiasNanos
-            }
+                this)
         }
+        applyCameraClockCalibration()
 
         val cameraSelector = CameraHelper.cameraLensToSelector(cameraSettingState.value.currentLens)
 

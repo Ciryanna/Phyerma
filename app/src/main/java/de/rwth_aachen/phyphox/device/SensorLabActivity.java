@@ -56,28 +56,6 @@ public class SensorLabActivity extends AppCompatActivity implements SensorEventL
                 rows.add(new Row(s, match));
         }
 
-        //Formerly its own bottom-nav page: device identity + sensor-library match now head
-        //the sensor list so the middle tab can host timestamp calibration.
-        String brand = DeviceDatabase.displayBrand(Build.BRAND, Build.MANUFACTURER);
-        ((TextView) findViewById(R.id.deviceCardTitle)).setText(
-                brand.isEmpty() ? Build.MODEL : brand + " · " + Build.MODEL);
-        StringBuilder card = new StringBuilder();
-        card.append("Android ").append(Build.VERSION.RELEASE)
-                .append(" (API ").append(Build.VERSION.SDK_INT).append(") · ")
-                .append(DeviceDatabase.guessOsFlavor()).append('\n');
-        if (match == null) {
-            card.append(getString(R.string.phyerma_db_miss));
-        } else {
-            card.append(getString(R.string.phyerma_db_hit, match.model, match.sampleSize));
-            if (match.accelAvg != null)
-                card.append(String.format(Locale.US, "\nrest-g = %.4f", match.accelAvg));
-            if (match.accelStd != null)
-                card.append(String.format(Locale.US, "  σ = %.5f", match.accelStd));
-            if (match.accelRate != null)
-                card.append(String.format(Locale.US, "  %.1f Hz", match.accelRate));
-        }
-        ((TextView) findViewById(R.id.deviceCardBody)).setText(card.toString());
-
         RecyclerView list = findViewById(R.id.sensorList);
         list.setLayoutManager(new LinearLayoutManager(this));
         adapter = new Adapter(rows, row -> {

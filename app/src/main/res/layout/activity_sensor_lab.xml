@@ -20,42 +20,12 @@
         android:textColor="@color/phyphox_white_70"
         android:textSize="13sp" />
 
-    <LinearLayout
-        android:id="@+id/deviceCard"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/sensorLabIntro"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="12dp"
-        android:background="@drawable/bg_surface_card"
-        android:orientation="vertical"
-        android:padding="14dp">
-
-        <TextView
-            android:id="@+id/deviceCardTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/phyphox_white_100"
-            android:textSize="17sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/deviceCardBody"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:fontFamily="monospace"
-            android:textColor="@color/phyphox_white_90"
-            android:textSize="13sp" />
-    </LinearLayout>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/sensorList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/mainBottomNav"
-        android:layout_below="@id/deviceCard"
+        android:layout_below="@id/sensorLabIntro"
         android:clipToPadding="false"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"

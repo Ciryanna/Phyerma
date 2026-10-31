@@ -63,4 +63,21 @@
     </style>
 
 
+    <style name="PhyermaPanelSection">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">6dp</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:textColor">@color/phyphox_primary_weak</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="PhyermaPanelCard">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_surface_card</item>
+        <item name="android:padding">14dp</item>
+    </style>
 </resources>

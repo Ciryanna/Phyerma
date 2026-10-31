@@ -1199,6 +1199,15 @@ public class RemoteServer {
             }
             deviceJson.put("sensors", sensorsJson);
 
+            //The calibration tab's ticked items, same rows as meta/calibration.csv in an export.
+            java.util.Map<String, String> profile = de.rwth_aachen.phyphox.device.ProfileMeta.collect(context);
+            if (!profile.isEmpty()) {
+                JSONObject calibrationJson = new JSONObject();
+                for (java.util.Map.Entry<String, String> row : profile.entrySet())
+                    calibrationJson.put(row.getKey(), row.getValue());
+                deviceJson.put("calibration", calibrationJson);
+            }
+
             return respond(response, deviceJson.toString());
         } catch (JSONException e) {
             Log.e("configHandler", "Error: " + e.getMessage());
