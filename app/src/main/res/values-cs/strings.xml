@@ -63,7 +63,6 @@
     <string name="info">Informace</string>
     <string name="categoryNewExperiment">Vlastní jednoduché experimenty</string>
     <string name="confirmDeleteTitle">Potvrdit smazání\?</string>
-    <string name="pick_exportFormat">Zvolte formát dat pro export.</string>
     <string name="title_activity_experiment">Phyerma</string>
     <string name="save_locally_done">Experiment úspěšně přidán do sbírky.</string>
     <string name="save_state_save">Do sbírky</string>

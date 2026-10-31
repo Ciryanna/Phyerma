@@ -87,7 +87,6 @@
     <string name="save_state_success">Эксперимент сохранен в вашей коллекции.</string>
     <string name="timedRun">Хронометраж</string>
     <string name="pick_exportSets">Выберите данные для экспорта.</string>
-    <string name="pick_exportFormat">Выберите формат данных.</string>
     <string name="noDrawableData">Данные не могут быть отображены.</string>
     <string name="categoryNewExperiment">Простые пользовательские эксперименты</string>
     <string name="categoryRawSensor">Исходные датчики</string>

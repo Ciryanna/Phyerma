@@ -114,4 +114,54 @@ public class VideoInputTest {
         video.discard();
         assertFalse(video.hasData());
     }
+
+    @Test
+    public void aSegmentStillRecordingIsNotExported() throws Exception {
+        timeReference.registerEvent(ExperimentTimeReference.TimeMappingEvent.START);
+        writeSegment(30);
+        timeReference.registerEvent(ExperimentTimeReference.TimeMappingEvent.PAUSE);
+        timeReference.registerEvent(ExperimentTimeReference.TimeMappingEvent.START);
+        File open = video.beginSegmentFile();
+        FileOutputStream out = new FileOutputStream(open);
+        out.write(new byte[]{9, 9});
+        out.close();
+
+        assertTrue(video.isRecording());
+        assertTrue("the finished segment still counts", video.hasData());
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        ZipOutputStream zip = new ZipOutputStream(bytes);
+        video.writeToZip(zip, "1.0-test");
+        zip.close();
+
+        Map<String, byte[]> entries = new HashMap<>();
+        ZipInputStream in = new ZipInputStream(new ByteArrayInputStream(bytes.toByteArray()));
+        ZipEntry e;
+        while ((e = in.getNextEntry()) != null)
+            entries.put(e.getName(), in.readAllBytes());
+        in.close();
+
+        assertTrue(entries.containsKey("video/video_0.mp4"));
+        assertFalse("an MP4 that has no index yet cannot be played", entries.containsKey("video/video_1.mp4"));
+        JSONObject json = new JSONObject(new String(entries.get("video/video.json"), "UTF-8"));
+        assertEquals(1, json.getJSONArray("segments").length());
+        assertTrue(json.getBoolean("inProgressSegmentExcluded"));
+    }
+
+    @Test
+    public void aLoneSegmentStillRecordingIsNotData() throws Exception {
+        timeReference.registerEvent(ExperimentTimeReference.TimeMappingEvent.START);
+        video.beginSegmentFile();
+
+        assertTrue(video.isRecording());
+        assertFalse(video.hasData());
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        ZipOutputStream zip = new ZipOutputStream(bytes);
+        video.writeToZip(zip, "1.0-test");
+        zip.close();
+        ZipInputStream in = new ZipInputStream(new ByteArrayInputStream(bytes.toByteArray()));
+        assertNull("nothing is written when no segment is finished", in.getNextEntry());
+        in.close();
+    }
 }

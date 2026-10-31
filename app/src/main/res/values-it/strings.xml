@@ -56,7 +56,6 @@
     <string name="remoteServerWarningTitle">Allarme sicurezza!</string>
     <string name="categoryNewExperiment">Esperimenti personalizzati</string>
     <string name="confirmDeleteTitle">Conferma eliminazione\?</string>
-    <string name="pick_exportFormat">Scegli il formato dei dati.</string>
     <string name="title_activity_experiment">Phyerma</string>
     <string name="save_locally_done">L’esperimento è stato correttamente aggiunto alla collezione.</string>
     <string name="delete">Elimina</string>

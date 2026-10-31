@@ -86,7 +86,6 @@
     <string name="save_state_success">Η κατάσταση αποθηκεύτηκε στη συλλογή σας.</string>
     <string name="timedRun">Χρονομετρημένη εκτέλεση</string>
     <string name="pick_exportSets">Επιλέξτε τα σύνολα δεδομένων για εξαγωγή.</string>
-    <string name="pick_exportFormat">Επλέξτε το format των δεδομένων.</string>
     <string name="noDrawableData">Μη απεικονίσιμα δεδομένα.</string>
     <string name="categoryRawSensor">Αισθητήρες</string>
     <string name="experimentinfo_hint">Διαβάστε τις πληροφορίες του πειράματος για να μάθετε τη χρήση του.</string>

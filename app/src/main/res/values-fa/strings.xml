@@ -55,7 +55,6 @@
     <string name="save_state_title">عنوان</string>
     <string name="save_state_share">به اشتراک‌گذاری</string>
     <string name="save_state_default_title">اندازه‌گیری</string>
-    <string name="pick_exportFormat">فرمت داده‌ها را انتخاب کنید.</string>
     <string name="experimentinfo_hint">اطلاعات آزمایش را بررسی کنید تا بیاموزید چگونه از این آزمایش استفاده کنید.</string>
     <string name="newExperimentInputRate">نرخ نمونه‌برداری حسگر (به Hz، ۰ = سریع‌ترین حالت ممکن)</string>
     <string name="translationToWebsiteURL">http://phyphox.org/languages#en</string>

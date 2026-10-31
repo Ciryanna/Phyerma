@@ -148,7 +148,6 @@
     <string name="open_bluetooth_assets_title">Experiment för Bluetooth enhet</string>
     <string name="timedRun">Tidsstyrd körning</string>
     <string name="pick_exportSets">Välj data att exportera.</string>
-    <string name="pick_exportFormat">Välj dataformat.</string>
     <string name="noDrawableData">Inga data att rita.</string>
     <string name="categoryNewExperiment">Enkla egna experiment</string>
     <string name="categoryRawSensor">Råa sensorer</string>

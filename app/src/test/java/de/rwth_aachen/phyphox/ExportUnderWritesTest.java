@@ -76,7 +76,7 @@ public class ExportUnderWritesTest {
             File cacheDir = activity.getCacheDir();
             for (int i = 0; i < 200 && failure.get() == null; i++) {
                 File file = experiment.exporter.exportDirect(
-                        experiment.exporter.exportFormats[1], cacheDir, true, "export", activity);
+                        cacheDir, false, "export", activity);
                 assertTrue("the export produced no file", file != null && file.isFile());
             }
         } finally {

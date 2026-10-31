@@ -146,7 +146,6 @@
     <string name="open_bluetooth_assets_title">Thí nghiệm cho Bluetooth</string>
     <string name="timedRun">Thời gian chạy</string>
     <string name="pick_exportSets">Chọn bộ dữ liệu để xuất.</string>
-    <string name="pick_exportFormat">Chọn định dạng dữ liệu.</string>
     <string name="noDrawableData">Không xuất được dữ liệu.</string>
     <string name="categoryNewExperiment">Thí nghiệm tùy chỉnh đơn giản</string>
     <string name="categoryRawSensor">Cảm biến thô</string>

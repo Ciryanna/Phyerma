@@ -55,6 +55,9 @@
     <string name="export_empty">This experiment configuration does not define any data to be exported. If this is an error, please contact the source of the QR code or configuration file.</string>
     <string name="export_subject">Data from Phyerma</string>
     <string name="export_pick_share">Pick an export method</string>
+    <string name="export_preparing">Packing the export…</string>
+    <string name="export_failed">The export could not be written. Nothing was shared.</string>
+    <string name="export_video_in_progress">A video segment is still recording and is not part of this export. Stop the measurement to include it.</string>
     <string name="share">Share screenshot</string>
     <string name="download">Download</string>
     <string name="savedToDownloadsMessage">File saved to Downloads</string>
@@ -89,7 +92,6 @@
     <string name="open_bluetooth_assets">The following experiments for your device are available in Phyerma. You can either just open and use them or add them all to your collection to easily access them from the main menu.</string>
     <string name="timedRun">Timed run</string>
     <string name="pick_exportSets">Pick the data sets to export.</string>
-    <string name="pick_exportFormat">Choose the data format.</string>
     <string name="noDrawableData">No drawable data.</string>
     <string name="categoryNewExperiment">Simple custom experiments</string>
     <string name="categoryRawSensor">Raw Sensors</string>

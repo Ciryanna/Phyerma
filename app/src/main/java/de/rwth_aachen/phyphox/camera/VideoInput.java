@@ -90,7 +90,7 @@ public class VideoInput implements Serializable {
     }
 
     //Called on the GL executor thread (from AnalyzingOpenGLRenderer). Opens the next segment file.
-    public File beginSegmentFile() {
+    public synchronized File beginSegmentFile() {
         if (sessionDir == null)
             return null;
         sessionDir.mkdirs();
@@ -132,7 +132,7 @@ public class VideoInput implements Serializable {
     //real hardware the encoder may reorder or drop frames. writtenNanos carries the monotonic
     //timestamp of every written frame - their experiment times are the authoritative
     //frame->time mapping of the MP4.
-    public void endSegmentFile(long framesWritten, long framesSubmitted, long packetsSkipped, java.util.List<Long> writtenNanos) {
+    public synchronized void endSegmentFile(long framesWritten, long framesSubmitted, long packetsSkipped, java.util.List<Long> writtenNanos) {
         Segment seg = current;
         if (seg == null)
             return;
@@ -180,17 +180,29 @@ public class VideoInput implements Serializable {
         }
     }
 
+    //Only segments the encoder has finished count: the one still being recorded is an MP4 without
+    //its index (the muxer writes that on stop) and cannot be played, and its frame bookkeeping is
+    //still zero. Called from the export thread while the GL thread keeps recording, hence the lock.
+    private synchronized List<Segment> finishedSegments() {
+        List<Segment> finished = new ArrayList<>();
+        if (segments != null)
+            for (Segment seg : segments)
+                if (seg != current && seg.frames > 0)
+                    finished.add(seg);
+        return finished;
+    }
+
     public boolean hasData() {
-        if (segments == null)
-            return false;
-        for (Segment seg : segments)
-            if (seg.frames > 0)
-                return true;
-        return false;
+        return !finishedSegments().isEmpty();
+    }
+
+    //True while a segment is being recorded, i.e. an export now would leave that segment out.
+    public synchronized boolean isRecording() {
+        return current != null;
     }
 
     //Clear-data semantics: a clear wipes the run's recordings together with the buffers.
-    public void discard() {
+    public synchronized void discard() {
         if (segments != null)
             segments.clear();
         current = null;
@@ -203,14 +215,15 @@ public class VideoInput implements Serializable {
     }
 
     public void writeToZip(ZipOutputStream zstream, String appVersion) throws IOException {
-        if (!hasData())
+        List<Segment> finished = finishedSegments();
+        if (finished.isEmpty())
             return;
-        int index = 0;
-        for (Segment seg : segments) {
+        boolean inProgress = isRecording();
+        for (Segment seg : finished) {
             //A segment file may be gone (files deleted out from under the app) - skip the zip
             //entry but keep the segment in video.json marked missing so no metadata is lost.
             if (seg.file.exists()) {
-                String name = "video/video_" + index + ".mp4";
+                String name = "video/video_" + seg.index + ".mp4";
                 zstream.putNextEntry(new ZipEntry(name));
                 FileInputStream in = new FileInputStream(seg.file);
                 try {
@@ -225,14 +238,13 @@ public class VideoInput implements Serializable {
             } else {
                 seg.missing = true;
             }
-            index++;
         }
         zstream.putNextEntry(new ZipEntry("video/video.json"));
-        zstream.write(toJson(appVersion).toString().getBytes("UTF-8"));
+        zstream.write(toJson(appVersion, finished, inProgress).toString().getBytes("UTF-8"));
         zstream.closeEntry();
     }
 
-    private JSONObject toJson(String appVersion) {
+    private JSONObject toJson(String appVersion, List<Segment> finished, boolean inProgress) {
         JSONObject root = new JSONObject();
         try {
             root.put("app", "Phyerma " + appVersion);
@@ -246,7 +258,7 @@ public class VideoInput implements Serializable {
             root.put("timeBase", "elapsedRealtimeNanos");
 
             JSONArray segs = new JSONArray();
-            for (Segment seg : segments) {
+            for (Segment seg : finished) {
                 JSONObject s = new JSONObject();
                 s.put("index", seg.index);
                 s.put("file", "video_" + seg.index + ".mp4");
@@ -268,6 +280,8 @@ public class VideoInput implements Serializable {
                 segs.put(s);
             }
             root.put("segments", segs);
+            if (inProgress)
+                root.put("inProgressSegmentExcluded", true);
 
             JSONArray events = new JSONArray();
             for (ExperimentTimeReference.TimeMapping m : timeReference.getTimeMappings()) {

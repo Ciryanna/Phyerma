@@ -16,7 +16,7 @@ Source: [github.com/Ciryanna/Phyerma](https://github.com/Ciryanna/Phyerma) · Ap
 
 This build already does the following.
 
-- **Experiments.** Ready-made physics experiments from the phyphox library: acceleration, rotation, magnetic field, light, pressure, proximity, sound, GPS, camera, depth, and Bluetooth instruments. Import a `.phyphox` file or a QR code. Export CSV, TSV, or Excel.
+- **Experiments.** Ready-made physics experiments from the phyphox library: acceleration, rotation, magnetic field, light, pressure, proximity, sound, GPS, camera, depth, and Bluetooth instruments. Import a `.phyphox` file or a QR code. One tap exports a zip of plain CSV files, with device and timing metadata and any recorded video or sync audio alongside.
 - **This phone.** A device page with brand, model, and the system skin (HyperOS, MIUI, ColorOS, OriginOS, Funtouch, MagicOS, HarmonyOS / EMUI, Flyme, One UI, and others).
 - **A baseline, not a hidden scale factor.** The page matches this model against a local snapshot of the crowd-sourced [phyphox sensor database](https://phyphox.org/sensordb/). Rest-g, noise, and rate are shown as a reference. They are not applied to experiment readings.
 - **Sensor lab.** Every sensor Android exposes, in SI units, with a two-second window, measured noise, measured rate, and the range Android claims — labeled as a claim.
@@ -66,7 +66,7 @@ Sensor-database snapshots are crowd-sourced by phyphox users. FFTW, jlhttp, ZXin
 
 ### 现在就能用
 
-- **实验。** phyphox 实验库：加速度、转动、磁场、光、气压、距离、声音、GPS、相机、深度、蓝牙仪器。可导入 `.phyphox` 或扫二维码。可导出 CSV、TSV、Excel。
+- **实验。** phyphox 实验库：加速度、转动、磁场、光、气压、距离、声音、GPS、相机、深度、蓝牙仪器。可导入 `.phyphox` 或扫二维码。一键导出一个 zip：纯 CSV 数据，附设备和时间元数据，录过的视频和同步音频也一起带上。
 - **这台手机。** 设备页写出品牌、型号和系统皮肤（HyperOS、MIUI、ColorOS、OriginOS、Funtouch、MagicOS、鸿蒙 / EMUI、Flyme、One UI 等）。
 - **基线只作对照。** 用本地的 [phyphox 传感器库](https://phyphox.org/sensordb/) 快照匹配型号，显示静止重力、噪声和采样率。这些数**不会**被悄悄乘进实验读数。
 - **传感器实验室。** Android 暴露出的每一项传感器，SI 单位，两秒窗口，实测噪声，实测速率，以及 Android 自称的量程——标明这是自称。

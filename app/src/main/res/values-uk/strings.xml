@@ -148,7 +148,6 @@
     <string name="open_bluetooth_assets_title">Експерименти для пристрою Bluetooth</string>
     <string name="timedRun">Контроль часу</string>
     <string name="pick_exportSets">Виберіть набір даних для експорту.</string>
-    <string name="pick_exportFormat">Виберіть формат даних.</string>
     <string name="noDrawableData">Немає даних для відображення.</string>
     <string name="categoryNewExperiment">Прості експерименти користувача</string>
     <string name="categoryRawSensor">Первинні дані сенсорів</string>

@@ -84,7 +84,6 @@
     <string name="open_bluetooth_assets_title">બ્લૂટૂથ ડિવાઇસ માટે પ્રયોગો</string>
     <string name="timedRun">સમયબદ્ધ રન</string>
     <string name="pick_exportSets">નિકાસ કરવા માટે ડેટા સેટ પસંદ કરો.</string>
-    <string name="pick_exportFormat">ડેટા ફોર્મેટ પસંદ કરો.</string>
     <string name="noDrawableData">કોઈ ડ્રો કરી શકાય તેવો ડેટા નથી.</string>
     <string name="categoryNewExperiment">સરળ કસ્ટમ પ્રયોગો</string>
     <string name="categoryRawSensor">રો સેન્સર</string>

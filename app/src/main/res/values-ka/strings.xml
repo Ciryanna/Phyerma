@@ -157,7 +157,6 @@
     <string name="open_bluetooth_assets_title">ექსპერიმენტები ბლუთუზ მოწყობილობისათვის</string>
     <string name="timedRun">დროის დათვლა</string>
     <string name="pick_exportSets">ამოირჩიე მონაცემები საექსპორტოდ.</string>
-    <string name="pick_exportFormat">ამოირჩიე მონაცემების ფორმატი.</string>
     <string name="noDrawableData">არარის დახატვადი მონაცემები.</string>
     <string name="categoryNewExperiment">მარტივი ექსპერიმენტები</string>
     <string name="categoryRawSensor">დაუმუშავებელი სენსორები</string>

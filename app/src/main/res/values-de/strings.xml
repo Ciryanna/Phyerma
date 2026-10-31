@@ -37,7 +37,6 @@
     <string name="newExperimentInputTitle">Titel</string>
     <string name="next">Weiter</string>
     <string name="ok">OK</string>
-    <string name="pick_exportFormat">Wählen Sie ein Datei-Format.</string>
     <string name="pick_exportSets">Wählen Sie die zu exportierenden Datensätze.</string>
     <string name="remoteServer">Fernzugriff erlauben</string>
     <string name="remoteServerActive">Fernzugriff aktiv. Sie erreichen dieses Experiment unter folgender URL:

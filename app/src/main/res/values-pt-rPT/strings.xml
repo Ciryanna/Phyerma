@@ -83,7 +83,6 @@
     <string name="save_state_success">Medidas foram salvas na colecão.</string>
     <string name="timedRun">Medida temporizada</string>
     <string name="pick_exportSets">Escolha o conjunto de dados para exportar.</string>
-    <string name="pick_exportFormat">Escolha o formato dos dados.</string>
     <string name="noDrawableData">Dados não disponíveis para visualização.</string>
     <string name="categoryNewExperiment">Experimentos simples personalizados</string>
     <string name="categoryRawSensor">Sensores</string>

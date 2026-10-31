@@ -169,7 +169,6 @@
     <string name="open_bluetooth_assets_title">ब्लूटूथ डिवाइस के लिए प्रयोग</string>
     <string name="timedRun">समयबद्ध रन</string>
     <string name="pick_exportSets">निर्यात करने के लिए डेटा सेट चुनें.</string>
-    <string name="pick_exportFormat">डेटा प्रारूप चुनें.</string>
     <string name="noDrawableData">कोई ड्रा करने योग्य डेटा नहीं.</string>
     <string name="categoryNewExperiment">सरल कस्टम प्रयोग</string>
     <string name="categoryRawSensor">रॉ सेंसर</string>

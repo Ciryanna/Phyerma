@@ -74,6 +74,9 @@
     <string name="export">导出数据</string>
     <string name="export_subject">来自 Phyerma 的数据</string>
     <string name="export_pick_share">选择导出模式</string>
+    <string name="export_preparing">正在打包导出…</string>
+    <string name="export_failed">导出文件写入失败，没有分享任何内容。</string>
+    <string name="export_video_in_progress">仍在录制的视频片段不在本次导出中。停止测量后再导出即可包含。</string>
     <string name="share">分享屏幕截图</string>
     <string name="share_subject">来自 Phyerma 的屏幕截图</string>
     <string name="share_pick_share">选择分享途径</string>
@@ -150,7 +153,6 @@
     <string name="save_state_success">状态已保存至你的收藏。</string>
     <string name="timedRun">定时运行</string>
     <string name="pick_exportSets">选择数据组导出。</string>
-    <string name="pick_exportFormat">选择数据格式。</string>
     <string name="noDrawableData">无可用数据。</string>
     <string name="categoryNewExperiment">简易自定义实验</string>
     <string name="categoryRawSensor">原始传感器</string>

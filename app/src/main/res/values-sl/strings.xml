@@ -115,7 +115,6 @@
     <string name="open_bluetooth_assets_title">Eksperimenti preko naprave Bluetooth</string>
     <string name="timedRun">Merjenje časa</string>
     <string name="pick_exportSets">Izberite zbirke podatkov za izvoz.</string>
-    <string name="pick_exportFormat">Izberite obliko podatkov.</string>
     <string name="noDrawableData">Ni podatkov za izris.</string>
     <string name="categoryNewExperiment">Preprosti eksprimenti po meri</string>
     <string name="categoryRawSensor">Senzorji RAW</string>

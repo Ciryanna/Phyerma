@@ -87,7 +87,6 @@
     <string name="save_state_success">状態はあなたのコレクションに保存されました．</string>
     <string name="timedRun">プログラム計測</string>
     <string name="pick_exportSets">エクスポートするデータの選択.</string>
-    <string name="pick_exportFormat">データフォーマットを選択してください．</string>
     <string name="noDrawableData">描画可能なデータがありません．</string>
     <string name="categoryNewExperiment">簡単なカスタム実験</string>
     <string name="categoryRawSensor">センサー出力</string>

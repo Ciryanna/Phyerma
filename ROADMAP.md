@@ -14,7 +14,7 @@ Nothing in **Designing** or **Planned** is a claim about the current APK.
 
 ## In this build
 
-- phyphox experiment library, `.phyphox` / QR import, CSV / TSV / Excel export
+- phyphox experiment library, `.phyphox` / QR import, one-tap export as a zip of CSV files (data, metadata, recorded video and sync audio)
 - Device page: brand, model, OS skin
 - Local snapshot of the phyphox sensor database, shown as a baseline
 - Sensor lab: SI units, two-second window, measured noise and rate, Android-claimed range labeled as a claim

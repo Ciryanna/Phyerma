@@ -1436,7 +1436,7 @@ public class Experiment extends AppCompatActivity implements View.OnClickListene
 
         //Export button. Call the export function of the DataExport class
         if (id == R.id.action_export) {
-            if (experiment.exporter.exportSets.size() == 0) {
+            if (!experiment.exporter.hasContent()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(res.getString(R.string.export_empty))
                         .setTitle(R.string.export)

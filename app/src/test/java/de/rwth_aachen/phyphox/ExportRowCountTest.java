@@ -15,10 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipFile;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-
 //An export set holds as many rows as its LONGEST column, with the shorter columns padded with
 //NaN (ruled 2026-08-25, export-set-row-count). Sizing by the first column instead truncated
 //every longer column, and an empty first container dropped the whole set - motion_stopwatch
@@ -87,7 +83,7 @@ public class ExportRowCountTest {
         Experiment activity = CorpusTestEnvironment.fullyEquippedActivity();
         PhyphoxExperiment experiment = load(activity);
 
-        File file = experiment.exporter.exportDirect(experiment.exporter.exportFormats[1],
+        File file = experiment.exporter.exportDirect(
                 activity.getCacheDir(), false, "rowcount", activity);
 
         List<String> all = csvRows(file, "All");
@@ -99,23 +95,6 @@ public class ExportRowCountTest {
         List<String> mixed = csvRows(file, "Mixed");
         assertEquals("A shorter later column does not shorten the set", 3, mixed.size());
         assertTrue("The shorter column is padded: " + mixed.get(2), mixed.get(2).endsWith("NaN"));
-    }
-
-    @Test
-    public void xlsxHoldsAsManyRowsAsTheLongestColumn() throws Exception {
-        Experiment activity = CorpusTestEnvironment.fullyEquippedActivity();
-        PhyphoxExperiment experiment = load(activity);
-
-        File file = experiment.exporter.exportDirect(experiment.exporter.exportFormats[0],
-                activity.getCacheDir(), false, "rowcount", activity);
-
-        try (ZipFile archive = new ZipFile(file)) {
-            //Sheet 1 is the first export set; a header row plus one row per value.
-            Document sheet = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                    .parse(new ByteArrayInputStream(readAll(archive, "xl/worksheets/sheet1.xml")));
-            assertEquals("Header plus one row per value of the longest column",
-                    4, sheet.getElementsByTagName("row").getLength());
-        }
     }
 
     //The file the ruling came from, so the fix cannot silently regress on the real thing.
@@ -142,7 +121,7 @@ public class ExportRowCountTest {
             experiment.dataLock.unlock();
         }
 
-        File file = experiment.exporter.exportDirect(experiment.exporter.exportFormats[1],
+        File file = experiment.exporter.exportDirect(
                 activity.getCacheDir(), false, "motion", activity);
         assertEquals("The intervals must reach the file even with tlist empty",
                 2, csvRows(file, "All").size());

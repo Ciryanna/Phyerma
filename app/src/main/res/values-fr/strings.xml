@@ -146,7 +146,6 @@
     <string name="open_bluetooth_assets_title">Expériences propres aux appareils Bluetooth</string>
     <string name="timedRun">Définir le temps de mesure</string>
     <string name="pick_exportSets">Choisir le jeu de données à exporter.</string>
-    <string name="pick_exportFormat">Choisir le format des données.</string>
     <string name="noDrawableData">N.A.</string>
     <string name="categoryNewExperiment">Expériences simples personnalisées</string>
     <string name="categoryRawSensor">Capteurs</string>

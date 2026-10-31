@@ -137,7 +137,6 @@
     <string name="open_save_all">Gem alle</string>
     <string name="timedRun">Automatisk tidtagning</string>
     <string name="pick_exportSets">Vælg data, der skal eksporteres.</string>
-    <string name="pick_exportFormat">Vælg filformat.</string>
     <string name="noDrawableData">Ingen data at vise.</string>
     <string name="categoryNewExperiment">Enkle egne eksperimenter</string>
     <string name="categoryRawSensor">Sensorer</string>

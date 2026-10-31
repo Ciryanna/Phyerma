@@ -37,9 +37,7 @@ import de.rwth_aachen.phyphox.R;
 public class DataExportUtility{
 
     public static final int REQUEST_WRITE_EXTERNAL_STORAGE = 1001;
-    public static final String MIME_TYPE_CSV_MINI = "text/csv";
     public static final String MIME_TYPE_CSV_ZIP = "application/zip";
-    public static final String MIME_TYPE_XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     public static final String MIME_TYPE_PHYPHOX = "application/octet-stream";
 
     public static void createFileInDownloads(File exportFile, String filenameBase, String mimeType, Activity c){

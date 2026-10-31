@@ -85,7 +85,6 @@
     <string name="save_state_success">Stanje je sačuvano u vašu kolekciju.</string>
     <string name="timedRun">Merenje vremena</string>
     <string name="pick_exportSets">Izaberi podatke za odpremanje.</string>
-    <string name="pick_exportFormat">Izaberi format podataka.</string>
     <string name="noDrawableData">Nema slikovnih podataka.</string>
     <string name="categoryNewExperiment">Laki nasumični eksperimenti</string>
     <string name="categoryRawSensor">Senzori</string>

@@ -278,7 +278,7 @@ public class InteractiveGraphView extends RelativeLayout implements GraphView.Po
                                     ctx = ((ContextWrapper) ctx).getBaseContext();
                                 }
                                 if (act != null)
-                                    dataExport.export(act, true);
+                                    dataExport.export(act, false);
                             }
                             else if (id == R.id.graph_tools_log_x) {
                                 graphView.setLogScale(!graphView.logX, graphView.logY, graphView.logZ);

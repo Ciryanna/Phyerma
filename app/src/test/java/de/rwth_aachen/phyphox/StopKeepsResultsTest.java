@@ -110,7 +110,7 @@ public class StopKeepsResultsTest {
 
         pausedPass(experiment);
 
-        File file = experiment.exporter.exportDirect(experiment.exporter.exportFormats[1],
+        File file = experiment.exporter.exportDirect(
                 activity.getCacheDir(), false, "stopkeepsresults", activity);
         List<String> rows = csvRows(file, "Data");
         assertEquals("the export after a stop held only its header", 1, rows.size());

@@ -87,7 +87,6 @@
     <string name="save_state_success">Status is opgeslagen in uw experimentenlijst.</string>
     <string name="timedRun">Getimede meting</string>
     <string name="pick_exportSets">Kies datasets om te exporteren.</string>
-    <string name="pick_exportFormat">Kies data formaat.</string>
     <string name="noDrawableData">Geen visualiseerbare data.</string>
     <string name="categoryNewExperiment">Simpele aangepaste experimenten</string>
     <string name="categoryRawSensor">Onbewerkte sensoren</string>

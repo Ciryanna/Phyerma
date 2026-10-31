@@ -307,11 +307,8 @@ public class RemoteServer {
                         sb.append("<li>").append(view.name).append("</li>\n");
                     }
                 } else if (line.contains("<!-- [[exportFormatOptions]] -->")) {
-                    //The export format
-                    for (int i = 0; i < experiment.exporter.exportFormats.length; i++) {
-                        DataExport.ExportFormat format = experiment.exporter.exportFormats[i];
-                        sb.append("<option value=\"").append(i).append("\">").append(format.getName()).append("</option>\n");
-                    }
+                    //There is a single export format; the select stays so cached pages keep working
+                    sb.append("<option value=\"0\">CSV (ZIP)</option>\n");
                 } else {
                     //No placeholder. Just append this.
                     sb.append(line);
@@ -1057,39 +1054,18 @@ public class RemoteServer {
         }
     }
 
-    //The export query has the form export?format=1&set1=On&set3=On
-    //format gives the index of the export format selected by the user
-    //Any set (set0, set1, set2...) given should be included in this export
+    //The export query is simply export. There is a single export format (a zip of CSV files plus
+    //meta data and any recorded media), so a legacy format=0 parameter is accepted and ignored.
     public int handleExport(Request request, Response response) throws IOException {
-        //Get the parameters
-        String format = requestParams(request).get("format");
+        //Use the experiment's exporter to create the file
+        final String fileName = FileNameFormat.formatFilename(context, experiment.title, experiment.experimentTimeReference);
+        final File exportFile = experiment.exporter.exportDirect(callActivity.getCacheDir(), true, fileName, context);
+        if (exportFile == null)
+            return respond(response, "{\"error\": \"Export failed.\"}");
 
-        int formatInt;
-        try {
-            formatInt = Integer.parseInt(format);
-        } catch (NumberFormatException e) {
-            //A missing or non-numeric format is rejected with the same error object as an
-            //out-of-range one instead of failing the request
-            return respond(response, "{\"error\": \"Invalid format.\"}");
-        }
-        if (formatInt < 0 || formatInt >= experiment.exporter.exportFormats.length) {
-            //Not good. Build an error entity
-            return respond(response, "{\"error\": \"Format out of range.\"}");
-        } else {
-            //Alright, let's go on with the export
-
-            //Get the content-type
-            DataExport.ExportFormat exportFormat = experiment.exporter.exportFormats[formatInt];
-            String type = exportFormat.getType(false);
-
-            //Use the experiment's exporter to create the file
-            final String fileName = FileNameFormat.formatFilename(context, experiment.title, experiment.experimentTimeReference);
-            final File exportFile = experiment.exporter.exportDirect(exportFormat, callActivity.getCacheDir(), false, fileName, context);
-
-            //Set "Content-Disposition" to force the browser to handle this as a download with a default file name
-            response.getHeaders().add("Content-Disposition", "attachment; filename=\"" + exportFormat.getFilename(false) + "\"");
-            return respond(response, type, exportFile);
-        }
+        //Set "Content-Disposition" to force the browser to handle this as a download with a default file name
+        response.getHeaders().add("Content-Disposition", "attachment; filename=\"" + experiment.exporter.getFilename(fileName) + "\"");
+        return respond(response, experiment.exporter.getType(), exportFile);
     }
 
     //The config query does not take any parameters

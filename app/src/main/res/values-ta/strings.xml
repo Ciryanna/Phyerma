@@ -155,7 +155,6 @@
     <string name="open_save_all">அனைத்தையும் சேமி</string>
     <string name="timedRun">நேரப்படி இயக்கு</string>
     <string name="pick_exportSets">பதிவேற்றவேண்டிய தரவுகளைத் தேர்ந்தெடுக்கவும்.</string>
-    <string name="pick_exportFormat">தரவின் வகையைத் தேர்ந்தெடுக்கவும்.</string>
     <string name="noDrawableData">எடுக்கக்கூடிய தரவுகள் இல்லை.</string>
     <string name="categoryNewExperiment">பயனரின் எளிய பரிசோதனைகள்</string>
     <string name="categoryRawSensor">மூல உணர்விகள்</string>

@@ -157,7 +157,6 @@
     <string name="open_bluetooth_assets_title">Pokusi za Bluetooth uređaj</string>
     <string name="timedRun">Mjereno izvođenje</string>
     <string name="pick_exportSets">Izaberite grupe podataka za izvoz.</string>
-    <string name="pick_exportFormat">Izaberite format podataka.</string>
     <string name="noDrawableData">Nema podatka za crtanje.</string>
     <string name="categoryNewExperiment">Jednostavni prilagođeni pokusi</string>
     <string name="categoryRawSensor">Sirovi Senzori</string>

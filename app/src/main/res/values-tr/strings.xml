@@ -60,7 +60,6 @@
     <string name="save_state_share">Paylaş</string>
     <string name="save_state_default_title">Ölçüm</string>
     <string name="save_state_success">Durum koleksiyonuna kaydedildi.</string>
-    <string name="pick_exportFormat">Veri biçimini seçin.</string>
     <string name="noDrawableData">Çizilebilir veri yok.</string>
     <string name="experimentinfo_hint">Deneyin nasıl kullanılacağını öğrenmek için deney bilgisi kısmını kontrol edin.</string>
     <string name="newExperimentInputBufferSize">Ara bellek boyutu (depolanacak değerlerin sayısı)</string>

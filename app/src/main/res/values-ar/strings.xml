@@ -158,7 +158,6 @@
     <string name="open_bluetooth_assets_title">التجارب الخاصة بجهاز البلوتوث</string>
     <string name="timedRun">تشغيل محدد بوقت</string>
     <string name="pick_exportSets">اختر مجموعات البيانات لتصديرها.</string>
-    <string name="pick_exportFormat">اختر صيغة البيانات.</string>
     <string name="noDrawableData">لا توجد بيانات قابلة للرسم.</string>
     <string name="categoryNewExperiment">تجارب بسيطة مخصَّصة</string>
     <string name="categoryRawSensor">المستشعرات الخام</string>

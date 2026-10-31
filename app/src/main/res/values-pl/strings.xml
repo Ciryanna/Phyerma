@@ -77,7 +77,6 @@
     <string name="save_state_success">Status został zapisany w twoim zbiorze.</string>
     <string name="timedRun">Czas trwania</string>
     <string name="pick_exportSets">Wybierz zakres danym do wyeksportowania.</string>
-    <string name="pick_exportFormat">Wybierz format danych.</string>
     <string name="noDrawableData">Brak zaznaczonych danych.</string>
     <string name="categoryNewExperiment">Własne eksperymenty</string>
     <string name="categoryRawSensor">Surowe dane</string>

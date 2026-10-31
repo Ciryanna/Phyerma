@@ -319,5 +319,4 @@
     <string name="open_save_all">সবকিছু সেভ করুন</string>
     <string name="open_bluetooth_assets_title">ব্লুটুথ ডিভাইস এর জন্য পরীক্ষা</string>
     <string name="timedRun">সময় চালু</string>
-    <string name="pick_exportFormat">ডাটা সজ্জা নির্বাচন করুন।</string>
 </resources>

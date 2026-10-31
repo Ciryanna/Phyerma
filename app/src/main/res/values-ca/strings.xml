@@ -121,7 +121,6 @@
     <string name="open_save_all">Agregarlos todos</string>
     <string name="open_bluetooth_assets_title">Experimentos para dispositivo Bluetooth</string>
     <string name="timedRun">Ejecución cronometrada</string>
-    <string name="pick_exportFormat">Elige el formato de datos.</string>
     <string name="applyZoomFollow">Mantener y seguir nuevos datos</string>
     <string name="applyZoomThis">Solo esta gráfica</string>
     <string name="applyZoomSameVariable">Otros gráficos: Misma variable</string>

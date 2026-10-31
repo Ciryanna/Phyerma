@@ -1,6 +1,6 @@
 Phyerma turns the phone you are holding into a physics lab.
 
-Run a ready-made experiment, or open the sensors directly: acceleration, rotation, magnetic field, light, pressure, sound, location, and camera. Export the data as CSV, TSV, or Excel. Turn on remote access and drive the experiment from a browser on the same network — nothing to install on the computer.
+Run a ready-made experiment, or open the sensors directly: acceleration, rotation, magnetic field, light, pressure, sound, location, and camera. Export with one tap: a zip of plain CSV files, plus any recorded video and sync audio. Turn on remote access and drive the experiment from a browser on the same network — nothing to install on the computer.
 
 What you can see about this phone:
 

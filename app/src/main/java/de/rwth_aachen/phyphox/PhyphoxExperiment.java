@@ -234,7 +234,7 @@ public class PhyphoxExperiment implements Serializable, ExperimentTimeReference.
 
     //Do the export using the DataExport class (see DataExport.java)
     public void export(Activity c) {
-        exporter.export(c, false);
+        exporter.export(c, true);
     }
 
     //This function gets called in the main loop and takes care of any inputElements in the current experiment view
