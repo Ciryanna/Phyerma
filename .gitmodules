@@ -1,9 +1,9 @@
 [submodule "app/src/main/assets/experiments"]
 	path = app/src/main/assets/experiments
-	url = https://github.com/Staacks/phyphox-experiments
+	url = https://github.com/Ciryanna/phyphox-experiments
 [submodule "app/src/main/assets/remote"]
 	path = app/src/main/assets/remote
-	url = https://github.com/Staacks/phyphox-webinterface
+	url = https://github.com/Ciryanna/phyphox-webinterface
 [submodule "paho.mqtt.android"]
 	path = paho.mqtt.android
 	url = https://github.com/phyphox/paho.mqtt.android.git
