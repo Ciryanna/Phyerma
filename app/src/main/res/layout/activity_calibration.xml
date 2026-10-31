@@ -66,6 +66,32 @@
 
             <TextView
                 style="@style/PhyermaPanelSection"
+                android:text="@string/phyerma_nav_sensors" />
+
+            <LinearLayout
+                android:id="@+id/sensorsCard"
+                style="@style/PhyermaPanelCard"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/sensorsCardTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/phyphox_white_100"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/phyerma_panel_sensors_what"
+                    android:textColor="@color/phyphox_white_70"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/PhyermaPanelSection"
                 android:text="@string/phyerma_panel_section_tests" />
 
             <LinearLayout

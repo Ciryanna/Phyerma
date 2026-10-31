@@ -282,6 +282,15 @@ public abstract class PhyphoxFile {
         }
     }
 
+    //Permission state as the parser sees it. A validation-only host (see Experiment.forValidation)
+    //pretends everything is granted: the parser then checks the whole file instead of stopping at
+    //the first input that would ask for a permission, and nothing ever prompts the user.
+    private static int permissionState(Experiment parent, String permission) {
+        if (parent.validationOnly)
+            return PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(parent, permission);
+    }
+
     //Exceptions caused by a bad phyphox file
     public static class phyphoxFileException extends Exception {
         public phyphoxFileException(String message) {
@@ -2351,7 +2360,7 @@ public abstract class PhyphoxFile {
                 }
                 case "location": { //GPS input
                     //Check for recording permission
-                    if (ContextCompat.checkSelfPermission(parent, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (permissionState(parent, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         //No permission? Request it (Android 6+, only)
                         ActivityCompat.requestPermissions(parent, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
                         throw new phyphoxFileException("Need permission to receive location through GPS."); //We will throw an error here, but when the user grants the permission, the activity will be restarted from the permission callback
@@ -2386,7 +2395,7 @@ public abstract class PhyphoxFile {
                 }
                 case "audio": { //Audio input, aka microphone
                     //Check for recording permission
-                    if (ContextCompat.checkSelfPermission(parent, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    if (permissionState(parent, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                         //No permission? Request it (Android 6+, only)
                         ActivityCompat.requestPermissions(parent, new String[]{Manifest.permission.RECORD_AUDIO}, 0);
                         throw new phyphoxFileException("Need permission to record audio."); //We will throw an error here, but when the user grants the permission, the activity will be restarted from the permission callback
@@ -2435,7 +2444,7 @@ public abstract class PhyphoxFile {
                         throw new phyphoxFileException("Depth input is only supported from API level 23 upwards (Android 6)");
                     } else {
                         //Check for camera permission
-                        if (ContextCompat.checkSelfPermission(parent, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        if (permissionState(parent, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                             //No permission? Request it (Android 6+, only)
                             ActivityCompat.requestPermissions(parent, new String[]{Manifest.permission.CAMERA}, 0);
                             throw new phyphoxFileException("Need permission to access the camera."); //We will throw an error here, but when the user grants the permission, the activity will be restarted from the permission callback
@@ -2514,7 +2523,7 @@ public abstract class PhyphoxFile {
                     }
 
                     //Check for camera permission
-                    if (ContextCompat.checkSelfPermission(parent, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    if (permissionState(parent, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         //No permission? Request it (Android 6+, only)
                         ActivityCompat.requestPermissions(parent, new String[]{Manifest.permission.CAMERA}, 0);
                         throw new phyphoxFileException("Need permission to access the camera."); //We will throw an error here, but when the user grants the permission, the activity will be restarted from the permission callback
@@ -2636,7 +2645,7 @@ public abstract class PhyphoxFile {
                     }
 
                     //Check for camera permission
-                    if (ContextCompat.checkSelfPermission(parent, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    if (permissionState(parent, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(parent, new String[]{Manifest.permission.CAMERA}, 0);
                         throw new phyphoxFileException("Need permission to access the camera."); //We will throw an error here, but when the user grants the permission, the activity will be restarted from the permission callback
                     }
@@ -2648,7 +2657,7 @@ public abstract class PhyphoxFile {
                     double fps = getDoubleAttribute("fps", 30.0);
                     boolean audio = getBooleanAttribute("audio", false);
 
-                    if (audio && ContextCompat.checkSelfPermission(parent, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    if (audio && permissionState(parent, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(parent, new String[]{Manifest.permission.RECORD_AUDIO}, 0);
                         throw new phyphoxFileException("Need permission to record audio for the video."); //Same flow as the camera permission: granted -> activity restarts
                     }
@@ -2676,7 +2685,7 @@ public abstract class PhyphoxFile {
                         if (!Bluetooth.isSupported(parent)) {
                             throw new phyphoxFileException(parent.getResources().getString(R.string.bt_android_version));
                         } else {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && (ContextCompat.checkSelfPermission(parent, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(parent, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED)) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && (permissionState(parent, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED || permissionState(parent, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED)) {
                                 //Android 12+: New Bluetooth scan permission required
                                 ActivityCompat.requestPermissions(parent, new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT}, 0);
                                 throw new phyphoxFileException("Need permission to search for and access Bluetooth devices."); //We will throw an error here, but when the user grants the permission, the activity will be restarted from the permission callback
@@ -4120,6 +4129,16 @@ public abstract class PhyphoxFile {
         experiment.loaded = true;
         return experiment;
 
+    }
+
+    //Check an experiment given as text with the real parser, without showing or starting anything.
+    //Returns null if it loads, otherwise the parser's message (the same text the user would get
+    //when opening the file). Call it on a thread with a Looper, see Experiment.forValidation.
+    public static String checkXml(Context context, String xml) {
+        PhyphoxStream stream = new PhyphoxStream();
+        stream.inputStream = new ByteArrayInputStream(xml.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        PhyphoxExperiment checked = loadExperiment(stream, Experiment.forValidation(context));
+        return checked.loaded ? null : checked.message;
     }
 
     //This AsyncTask will load a phyphoxExperiment from an intent and return it by passing it to

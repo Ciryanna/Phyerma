@@ -9,10 +9,18 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import de.rwth_aachen.phyphox.ExperimentList.ExperimentListActivity;
 import de.rwth_aachen.phyphox.R;
+import de.rwth_aachen.phyphox.ai.AiActivity;
 import de.rwth_aachen.phyphox.helper.WindowInsetHelper;
 
 public final class BottomNavHelper {
     private BottomNavHelper() {}
+
+    //The three tabs are separate activities that look alike (same header, same bar), so the system's
+    //slide between them reads as a jump; a short cross-fade keeps the shared parts still.
+    @SuppressWarnings("deprecation")
+    public static void fade(Activity activity) {
+        activity.overridePendingTransition(R.anim.tab_fade_in, R.anim.tab_fade_out);
+    }
 
     public static void bind(Activity activity, int selectedItemId) {
         BottomNavigationView nav = activity.findViewById(R.id.mainBottomNav);
@@ -26,8 +34,8 @@ public final class BottomNavHelper {
         if (subtitle != null) {
             if (selectedItemId == R.id.nav_device)
                 subtitle.setText(R.string.phyerma_nav_device);
-            else if (selectedItemId == R.id.nav_sensors)
-                subtitle.setText(R.string.phyerma_nav_sensors);
+            else if (selectedItemId == R.id.nav_ai)
+                subtitle.setText(R.string.phyerma_nav_ai);
         }
         LanguageHelper.bind(activity);
         nav.setSelectedItemId(selectedItemId);
@@ -39,18 +47,21 @@ public final class BottomNavHelper {
                 Intent intent = new Intent(activity, ExperimentListActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 activity.startActivity(intent);
+                fade(activity);
                 if (!(activity instanceof ExperimentListActivity))
                     activity.finish();
                 return true;
             }
             if (id == R.id.nav_device) {
                 activity.startActivity(new Intent(activity, CalibrationActivity.class));
+                fade(activity);
                 if (!(activity instanceof ExperimentListActivity))
                     activity.finish();
                 return true;
             }
-            if (id == R.id.nav_sensors) {
-                activity.startActivity(new Intent(activity, SensorLabActivity.class));
+            if (id == R.id.nav_ai) {
+                activity.startActivity(new Intent(activity, AiActivity.class));
+                fade(activity);
                 if (!(activity instanceof ExperimentListActivity))
                     activity.finish();
                 return true;

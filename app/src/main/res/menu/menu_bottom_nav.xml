@@ -9,7 +9,7 @@
         android:icon="@drawable/ic_nav_device"
         android:title="@string/phyerma_nav_device" />
     <item
-        android:id="@+id/nav_sensors"
-        android:icon="@drawable/ic_nav_sensors"
-        android:title="@string/phyerma_nav_sensors" />
+        android:id="@+id/nav_ai"
+        android:icon="@drawable/ic_nav_ai"
+        android:title="@string/phyerma_nav_ai" />
 </menu>

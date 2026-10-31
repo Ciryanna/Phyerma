@@ -198,6 +198,18 @@ public class Experiment extends AppCompatActivity implements View.OnClickListene
     CountDownTimer cdTimer = null; //This holds the timer used for timed runs. If it is not null, a timed run is running and at the end of the countdown the measurement state will change
     long millisUntilFinished = 0; //This variable is used to cache the remaining countdown, so it is available outside the onTick-callback of the timer
 
+    //A host for PhyphoxFile.loadExperiment that is only ever used to check a file: it is attached to
+    //a context but never created, started or shown. The AI tab uses it to run model-written XML
+    //through the real parser before saving it. Must be created on a thread with a Looper (the
+    //activity owns a Handler).
+    public static Experiment forValidation(Context context) {
+        Experiment host = new Experiment();
+        host.attachBaseContext(context.getApplicationContext());
+        host.validationOnly = true;
+        host.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        return host;
+    }
+
     //The experiment
     PhyphoxExperiment experiment; //The experiment (definition and functionality) after it has been loaded.
     TabLayout tabLayout;
@@ -207,6 +219,7 @@ public class Experiment extends AppCompatActivity implements View.OnClickListene
     //Others...
     private Resources res; //Helper to easily access resources
     public SensorManager sensorManager; //The sensor manager
+    boolean validationOnly = false; //A parser-only host that is never shown (see forValidation)
     Intent intent; //Another helper to easily access the data of the intent that triggered this activity
     ProgressDialog progress; //Holds a progress dialog when a file is being loaded
     Bundle savedInstanceState = null; //Holds the saved instance state, so it can be handled outside onCreate

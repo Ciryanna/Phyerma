@@ -1,6 +1,8 @@
 package de.rwth_aachen.phyphox.device;
 
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.CheckBox;
@@ -29,6 +31,12 @@ public class CalibrationActivity extends AppCompatActivity {
 
         showDevice();
 
+        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        int sensorCount = sensorManager == null ? 0 : sensorManager.getSensorList(Sensor.TYPE_ALL).size();
+        ((TextView) findViewById(R.id.sensorsCardTitle)).setText(getString(R.string.phyerma_panel_sensors_title, sensorCount));
+        findViewById(R.id.sensorsCard).setOnClickListener(v ->
+                startActivity(new Intent(this, SensorLabActivity.class)));
+
         clockStatus = findViewById(R.id.clockStatus);
         includeDevice = findViewById(R.id.includeDevice);
         includeClock = findViewById(R.id.includeClock);
@@ -46,32 +54,42 @@ public class CalibrationActivity extends AppCompatActivity {
     }
 
     @Override
+    public void finish() {
+        super.finish();
+        BottomNavHelper.fade(this);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         refresh();
     }
 
     private void showDevice() {
-        DeviceProfile match = DeviceDatabase.get(this).matchThisPhone();
         String brand = DeviceDatabase.displayBrand(Build.BRAND, Build.MANUFACTURER);
         ((TextView) findViewById(R.id.deviceCardTitle)).setText(
                 brand.isEmpty() ? Build.MODEL : brand + " · " + Build.MODEL);
-        StringBuilder card = new StringBuilder();
-        card.append("Android ").append(Build.VERSION.RELEASE)
-                .append(" (API ").append(Build.VERSION.SDK_INT).append(") · ")
-                .append(DeviceDatabase.guessOsFlavor()).append('\n');
-        if (match == null) {
-            card.append(getString(R.string.phyerma_db_miss));
-        } else {
-            card.append(getString(R.string.phyerma_db_hit, match.model, match.sampleSize));
-            if (match.accelAvg != null)
-                card.append(String.format(Locale.US, "\nrest-g = %.4f", match.accelAvg));
-            if (match.accelStd != null)
-                card.append(String.format(Locale.US, "  σ = %.5f", match.accelStd));
-            if (match.accelRate != null)
-                card.append(String.format(Locale.US, "  %.1f Hz", match.accelRate));
-        }
-        ((TextView) findViewById(R.id.deviceCardBody)).setText(card.toString());
+        TextView body = findViewById(R.id.deviceCardBody);
+        String head = "Android " + Build.VERSION.RELEASE + " (API " + Build.VERSION.SDK_INT + ") · "
+                + DeviceDatabase.guessOsFlavor() + '\n';
+        body.setText(head);
+        //The first lookup parses the 3 MB database; doing that here would hold the first frame back.
+        new Thread(() -> {
+            DeviceProfile match = DeviceDatabase.get(getApplicationContext()).matchThisPhone();
+            StringBuilder card = new StringBuilder(head);
+            if (match == null) {
+                card.append(getString(R.string.phyerma_db_miss));
+            } else {
+                card.append(getString(R.string.phyerma_db_hit, match.model, match.sampleSize));
+                if (match.accelAvg != null)
+                    card.append(String.format(Locale.US, "\nrest-g = %.4f", match.accelAvg));
+                if (match.accelStd != null)
+                    card.append(String.format(Locale.US, "  σ = %.5f", match.accelStd));
+                if (match.accelRate != null)
+                    card.append(String.format(Locale.US, "  %.1f Hz", match.accelRate));
+            }
+            body.post(() -> body.setText(card.toString()));
+        }, "device-db").start();
     }
 
     //Re-read the store: the test page is a separate screen and writes it while we are paused.

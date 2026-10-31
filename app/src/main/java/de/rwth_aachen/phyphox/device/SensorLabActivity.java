@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 
 import de.rwth_aachen.phyphox.R;
+import de.rwth_aachen.phyphox.helper.WindowInsetHelper;
 
 public class SensorLabActivity extends AppCompatActivity implements SensorEventListener {
     public static final String EXTRA_TYPE = "sensor_type";
@@ -47,7 +48,12 @@ public class SensorLabActivity extends AppCompatActivity implements SensorEventL
         super.onCreate(savedInstanceState);
         setTheme(R.style.Theme_Phyphox_DayNight);
         setContentView(R.layout.activity_sensor_lab);
-        BottomNavHelper.bind(this, R.id.nav_sensors);
+        //A sub-page of the calibration panel: no bottom nav, so the header and the list take the system bar insets themselves.
+        WindowInsetHelper.setInsets(findViewById(R.id.pageHeader), WindowInsetHelper.ApplyTo.PADDING, WindowInsetHelper.ApplyTo.PADDING, WindowInsetHelper.ApplyTo.PADDING, WindowInsetHelper.ApplyTo.IGNORE);
+        WindowInsetHelper.setInsets(findViewById(R.id.sensorList), WindowInsetHelper.ApplyTo.IGNORE, WindowInsetHelper.ApplyTo.IGNORE, WindowInsetHelper.ApplyTo.IGNORE, WindowInsetHelper.ApplyTo.PADDING);
+        ((TextView) findViewById(R.id.headerSubtitle)).setText(R.string.phyerma_nav_sensors);
+        LanguageHelper.bind(this);
+        findViewById(R.id.sensorLabBack).setOnClickListener(v -> finish());
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         DeviceProfile match = DeviceDatabase.get(this).matchThisPhone();

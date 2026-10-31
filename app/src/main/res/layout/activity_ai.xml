@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/aiRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/phyphox_black_80">
+
+    <include layout="@layout/include_page_header" />
+
+    <include layout="@layout/include_bottom_nav" />
+
+    <LinearLayout
+        android:id="@+id/aiBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pageHeader"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="4dp">
+
+        <TextView
+            android:id="@+id/aiTarget"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_lang_chip"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingStart="12dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="8dp"
+            android:textColor="@color/phyphox_white_90"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/aiKey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_lang_chip"
+            android:paddingStart="12dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="8dp"
+            android:text="@string/phyerma_ai_key_button"
+            android:textColor="@color/phyphox_white_90"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/aiInputBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/mainBottomNav"
+        android:background="@color/phyphox_black_60"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageButton
+            android:id="@+id/aiMic"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/phyerma_ai_mic"
+            android:src="@drawable/ic_ai_mic" />
+
+        <EditText
+            android:id="@+id/aiInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/phyerma_ai_hint"
+            android:imeOptions="actionSend"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="5"
+            android:minHeight="48dp"
+            android:textColor="@color/phyphox_white_100"
+            android:textColorHint="@color/phyphox_white_50_black_50" />
+
+        <Button
+            android:id="@+id/aiSend"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginStart="4dp"
+            android:text="@string/phyerma_ai_send" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/aiScroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/aiInputBar"
+        android:layout_below="@id/aiBar"
+        android:clipToPadding="false"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:id="@+id/aiMessages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+</RelativeLayout>

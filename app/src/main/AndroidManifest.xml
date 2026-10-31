@@ -27,6 +27,8 @@
 
     <application android:name="de.rwth_aachen.phyphox.App"
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Phyphox.DayNight"
@@ -106,6 +108,12 @@
             android:screenOrientation="portrait"
             android:parentActivityName="de.rwth_aachen.phyphox.ExperimentList.ExperimentListActivity" />
         <activity
+            android:name="de.rwth_aachen.phyphox.ai.AiActivity"
+            android:label="@string/phyerma_nav_ai"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing"
+            android:parentActivityName="de.rwth_aachen.phyphox.ExperimentList.ExperimentListActivity" />
+        <activity
             android:name="de.rwth_aachen.phyphox.device.CameraClockTestActivity"
             android:label="@string/phyerma_calib_clock_title"
             android:screenOrientation="portrait"
@@ -114,7 +122,7 @@
             android:name="de.rwth_aachen.phyphox.device.SensorLabActivity"
             android:label="@string/phyerma_nav_sensors"
             android:screenOrientation="portrait"
-            android:parentActivityName="de.rwth_aachen.phyphox.ExperimentList.ExperimentListActivity" />
+            android:parentActivityName="de.rwth_aachen.phyphox.device.CalibrationActivity" />
         <activity
             android:name="de.rwth_aachen.phyphox.device.SensorDetailActivity"
             android:label="@string/phyerma_nav_sensors"
