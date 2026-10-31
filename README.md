@@ -8,7 +8,7 @@ Phyerma keeps [phyphox](https://phyphox.org), the open-source physics app from R
 
 **AI inside the experiment.** This is the part meant to be used every time you open the lab. Describe the measurement in ordinary language, and the app drafts it on the phone: the sensors, the analysis, the screen. You check the draft and save it there, with no desktop editor. Press a graph, a formula, or a button, and it tells you what the number is, what a sane result looks like, and what this phone tends to do.
 
-Source: [github.com/elwina/Phyerma](https://github.com/elwina/Phyerma) · Application id: `com.phyerma.app` · License: [GPL-3.0](LICENSE)
+Source: [github.com/Ciryanna/Phyerma](https://github.com/Ciryanna/Phyerma) · Application id: `com.phyerma.app` · License: [GPL-3.0](LICENSE)
 
 中文说明在 [下方](#中文)。路线图（含尚未进安装包的功能）在 [ROADMAP.md](ROADMAP.md)。
 
