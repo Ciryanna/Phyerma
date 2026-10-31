@@ -13,6 +13,6 @@ Sensor readings stay on the phone unless you export them, enable remote access, 
 
 Phyerma is an open-source fork of phyphox-android (GPL-3.0). The names “phyphox” and “RWTH Aachen University” are trademarks of the upstream project. Phyerma is not published by RWTH Aachen.
 
-Source: https://github.com/elwina/Phyerma
+Source: https://github.com/Ciryanna/Phyerma
 
 Sensors (not every phone has every one): accelerometer, gyroscope, magnetometer, light, pressure, proximity, microphone, GPS, camera, depth.

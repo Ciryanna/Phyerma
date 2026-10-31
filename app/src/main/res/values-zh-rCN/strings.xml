@@ -11,11 +11,11 @@
     <string name="newExperimentInputSensors">选择传感器</string>
     <string name="help">帮助信息</string>
     <string name="experimentsPhyphoxOrg">实验设计与说明</string>
-    <string name="experimentsPhyphoxOrgURL">https://github.com/elwina/Phyerma</string>
+    <string name="experimentsPhyphoxOrgURL">https://github.com/Ciryanna/Phyerma</string>
     <string name="faqPhyphoxOrg">常见问题</string>
-    <string name="faqPhyphoxOrgURL">https://github.com/elwina/Phyerma</string>
+    <string name="faqPhyphoxOrgURL">https://github.com/Ciryanna/Phyerma</string>
     <string name="remotePhyphoxOrg">远程控制帮助</string>
-    <string name="remotePhyphoxOrgURL">https://github.com/elwina/Phyerma</string>
+    <string name="remotePhyphoxOrgURL">https://github.com/Ciryanna/Phyerma</string>
     <string name="translationToWebsiteURL">http://phyphox.org/languages#zh_Hans</string>
     <string name="warning">警告</string>
     <string name="donotshowagain">不再显示</string>
@@ -26,7 +26,7 @@
     <string name="creditsNames">Phyerma:
 \n公开分支（com.phyerma.app）
 \n源码:
-\nhttps://github.com/elwina/Phyerma
+\nhttps://github.com/Ciryanna/Phyerma
 \n上游 phyphox — 开发与概念:
 \nSebastian Staacks 博士
 \n上游概念:
@@ -49,7 +49,7 @@
     <string name="sensorNotAvailableWarningText1">传感器</string>
     <string name="sensorNotAvailableWarningText2">不可用。通常这表示您的设备没有这种类型的传感器。</string>
     <string name="sensorNotAvailableWarningMoreInfo">更多信息</string>
-    <string name="sensorNotAvailableWarningMoreInfoURL">https://github.com/elwina/Phyerma</string>
+    <string name="sensorNotAvailableWarningMoreInfoURL">https://github.com/Ciryanna/Phyerma</string>
     <string name="ok">确定</string>
     <string name="close">关闭</string>
     <string name="next">下一步</string>
@@ -142,7 +142,7 @@
     <string name="deviceInfo">设备信息</string>
     <string name="copyToClipboard">复制到剪贴板</string>
     <string name="deviceInfoCopied">该设备信息已复制到你的剪贴板。</string>
-    <string name="gpl">Phyerma 以 GNU 通用公共许可证第 3 版发布。源码：https://github.com/elwina/Phyerma。它基于 phyphox-android（GNU GPL）。“phyphox”和“RWTH Aachen University”仍是上游项目的注册商标。</string>
+    <string name="gpl">Phyerma 以 GNU 通用公共许可证第 3 版发布。源码：https://github.com/Ciryanna/Phyerma。它基于 phyphox-android（GNU GPL）。“phyphox”和“RWTH Aachen University”仍是上游项目的注册商标。</string>
     <string name="sensorVendor">供应商特定</string>
     <string name="vendorSensorTitle">供应商特定传感器</string>
     <string name="save_state_subject">Phyerma 的实验状态</string>
@@ -191,7 +191,7 @@
     <string name="bt_fail_writing">写入操作未成功。</string>
     <string name="bt_more_info_link_text">若你的设备不被支持，选择“更多信息”，以便在我们的网站上了解更多关于灵活的低功耗蓝牙技术支持。</string>
     <string name="bt_more_info_link_button">更多信息</string>
-    <string name="bt_more_info_link_url">https://github.com/elwina/Phyerma</string>
+    <string name="bt_more_info_link_url">https://github.com/Ciryanna/Phyerma</string>
     <string name="creditsLibs">用于远程访问的 Web 界面采用了基于 GNU 通用公共许可证 v2 (GPLv2) 的 Java 轻量级 HTTP 服务器 (jlhttp)，并利用 JavaScript 库“Chart.js”来绘制数据 (http://chartjs.org)。对于傅里叶变换，我们使用了快速傅立叶转换库(http://fftw.org)，Copyright © 2003, 2007-11 Matteo Frigo, Copyright © 2003, 2007-11 Massachusetts Institute of Technology，都是GNU通用授权（第二版或以后）有效的。</string>
     <string name="vendorSensorWarning1">传感器</string>
     <string name="vendorSensorWarning2">未汇报正确的传感器类型。它可能是供应商特定的，我们只能从名字猜测其类型。因此，它可能不会如预期那样工作。</string>
@@ -377,7 +377,7 @@
     <string name="settings_mode_dark">开（默认）</string>
     <string name="settings_mode_no_dark">关</string>
     <string name="settings_mode_dark_system">跟随系统</string>
-    <string name="privacyPolicyURL">https://github.com/elwina/Phyerma</string>
+    <string name="privacyPolicyURL">https://github.com/Ciryanna/Phyerma</string>
     <string name="cameraFront">前</string>
     <string name="cameraBack">后</string>
     <string name="off">关</string>
@@ -486,9 +486,9 @@
     <string name="phyerma_claimed_range">系统声称量程</string>
     <string name="phyerma_claimed_res">系统声称分辨率</string>
     <string name="phyerma_source">源代码</string>
-    <string name="phyerma_source_url">https://github.com/elwina/Phyerma</string>
+    <string name="phyerma_source_url">https://github.com/Ciryanna/Phyerma</string>
     <string name="phyerma_privacy_title">隐私政策</string>
-    <string name="phyerma_privacy_body">Phyerma 在本机处理传感器数据，供你做物理实验。\n\n• 传感器读数默认留在本机。只有你导出、打开远程访问，或运行本身会联网的实验时，数据才会离开手机。\n• 远程访问需你主动开启，只在局域网提供网页。请勿在不信任的网络上打开。\n• 会联网的实验会先显示实验作者自己的隐私说明，那不是 Phyerma 的政策。\n• 随包装的传感器库是本地快照，不会回传。\n• Phyerma 不使用 Google Play 服务、Firebase、Crashlytics 或广告 SDK。\n• 源码：https://github.com/elwina/Phyerma</string>
+    <string name="phyerma_privacy_body">Phyerma 在本机处理传感器数据，供你做物理实验。\n\n• 传感器读数默认留在本机。只有你导出、打开远程访问，或运行本身会联网的实验时，数据才会离开手机。\n• 远程访问需你主动开启，只在局域网提供网页。请勿在不信任的网络上打开。\n• 会联网的实验会先显示实验作者自己的隐私说明，那不是 Phyerma 的政策。\n• 随包装的传感器库是本地快照，不会回传。\n• Phyerma 不使用 Google Play 服务、Firebase、Crashlytics 或广告 SDK。\n• 源码：https://github.com/Ciryanna/Phyerma</string>
     <string name="phyerma_calib_edit_hint">修正值（毫秒）</string>
     <string name="phyerma_calib_apply">应用此修正</string>
     <string name="phyerma_calib_applied">已应用 %1$.0f ms 修正。</string>

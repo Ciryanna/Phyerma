@@ -13,6 +13,6 @@ Phyerma 把你手上这台手机变成物理实验室。
 
 Phyerma 是 phyphox-android 的开源分支（GPL-3.0）。“phyphox”和“RWTH Aachen University”是上游项目的商标。Phyerma 不是由亚琛工业大学发布的。
 
-源码：https://github.com/elwina/Phyerma
+源码：https://github.com/Ciryanna/Phyerma
 
 传感器（并非每台手机都有全部）：加速度计、陀螺仪、磁力计、光、气压、距离、麦克风、GPS、相机、深度。
