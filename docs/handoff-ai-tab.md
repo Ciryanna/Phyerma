@@ -62,3 +62,12 @@
 ## 7. 切页动画
 
 三个底部栏目是三个独立 Activity，系统默认的滑动切换会让相同的页眉/底栏跟着跳。现在：`BottomNavHelper.fade(activity)` 在每次切页后调用 `overridePendingTransition(tab_fade_in, tab_fade_out)`（140 ms 交叉淡入淡出，`res/anim/`）；`CalibrationActivity`、`AiActivity` 重写 `finish()` 用同一动画，所以返回键也一致。校准页首次打开原来要在主线程解析 3 MB 的设备库（模拟器上约 1.1 s），现在放到后台线程，卡片先显示系统信息，匹配结果随后补上（首次打开约 0.4 s）。
+
+## 8. 语音输入
+
+麦克风按钮的逻辑（`AiActivity.listen()`）：
+1. 设置了「语音转文字密钥」→ 应用内录音（`VoiceRecorder`，16 kHz 单声道，最长 60 秒；点第二次结束）→ `SpeechClient` 把 WAV 以 multipart 发到 `https://api.siliconflow.cn/v1/audio/transcriptions`（模型 `FunAudioLLM/SenseVoiceSmall`，OpenAI 兼容接口）→ 文字填进输入框。
+2. 没有密钥 → 先试系统识别器（`RecognizerIntent`）；手机上没有识别器（没有 Google 服务的国产机常见）→ 弹出密钥窗口，说明录音会发到 api.siliconflow.cn。
+3. 长按麦克风随时修改/删除语音密钥。密钥与 DeepSeek 密钥同在 `phyerma_ai` 偏好文件里，同样不进备份。
+
+验证：`SpeechClientTest`（WAV 头、multipart 上传走本地套接字、错误解析）；模拟器上走通了 授权 → 录音（按钮变红）→ 上传 → 假密钥得到服务端 401 并提示「语音服务不接受这个密钥」，说明网络和接口形状是通的。**没有验证**：用真实密钥得到转写文字（没有可用的语音密钥）；想换服务商只需改 `SpeechClient.ENDPOINT`/`MODEL`。

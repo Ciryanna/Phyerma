@@ -609,4 +609,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <string name="phyerma_panel_sensors_title">All sensors (%1$d) ›</string>
     <string name="phyerma_panel_sensors_what">Live values, SI units, noise and measured rate for every sensor on this phone.</string>
     <string name="phyerma_panel_footer">Ticked items appear in meta/calibration.csv of an export and in the remote /meta answer. A camera offset that is applied to video frame times is always recorded in video.json, ticked or not.</string>
+    <string name="phyerma_ai_mic_denied">The microphone permission is needed to speak.</string>
+    <string name="phyerma_ai_mic_failed">The microphone could not be opened.</string>
+    <string name="phyerma_ai_recording">Listening… tap the microphone again to finish</string>
+    <string name="phyerma_ai_transcribing">Turning speech into text…</string>
+    <string name="phyerma_ai_speech_empty">No speech was recognized.</string>
+    <string name="phyerma_ai_speech_key_bad">The speech service did not accept the key.</string>
+    <string name="phyerma_ai_speech_network">The speech service could not be reached.</string>
+    <string name="phyerma_ai_speech_key_title">Speech-to-text key</string>
+    <string name="phyerma_ai_speech_key_message">This phone has no speech recognition service, so the microphone button can record in the app and turn it into text with SiliconFlow (free SenseVoice model). When you tap the microphone, the recording is sent to api.siliconflow.cn. The key stays on this phone; get one at siliconflow.cn. Long-press the microphone to change it later.</string>
 </resources>

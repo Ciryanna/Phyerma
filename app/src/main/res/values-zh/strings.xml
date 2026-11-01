@@ -534,4 +534,13 @@
     <string name="phyerma_panel_sensors_title">全部传感器（%1$d）›</string>
     <string name="phyerma_panel_sensors_what">这台手机上每个传感器的实时值、SI 单位、噪声和实测采样率。</string>
     <string name="phyerma_panel_footer">勾选的项目会出现在导出包的 meta/calibration.csv 以及远程接口的 /meta 里。已经用于视频帧时间的相机偏移，无论是否勾选，都会记录在 video.json 中。</string>
+    <string name="phyerma_ai_mic_denied">需要麦克风权限才能语音输入。</string>
+    <string name="phyerma_ai_mic_failed">无法打开麦克风。</string>
+    <string name="phyerma_ai_recording">正在听…再点一次麦克风结束</string>
+    <string name="phyerma_ai_transcribing">正在把语音转成文字…</string>
+    <string name="phyerma_ai_speech_empty">没有识别到语音。</string>
+    <string name="phyerma_ai_speech_key_bad">语音服务不接受这个密钥。</string>
+    <string name="phyerma_ai_speech_network">连不上语音服务。</string>
+    <string name="phyerma_ai_speech_key_title">语音转文字密钥</string>
+    <string name="phyerma_ai_speech_key_message">这台手机没有语音识别服务，所以麦克风按钮改为在应用内录音，并用硅基流动（SiliconFlow，免费的 SenseVoice 模型）转成文字。点麦克风后，录音会发送到 api.siliconflow.cn。密钥只保存在这台手机上，可在 siliconflow.cn 申请。以后想修改，长按麦克风即可。</string>
 </resources>

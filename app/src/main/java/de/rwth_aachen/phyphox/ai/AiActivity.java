@@ -1,8 +1,10 @@
 package de.rwth_aachen.phyphox.ai;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -22,10 +25,12 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +49,11 @@ public class AiActivity extends AppCompatActivity implements AiController.Listen
     private Button send;
     private TextView targetView;
     private ActivityResultLauncher<Intent> speech;
+    private ActivityResultLauncher<String> micPermission;
+    private ImageButton mic;
+    private final VoiceRecorder recorder = new VoiceRecorder();
+    private boolean transcribing;
+    private CharSequence inputHint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +101,19 @@ public class AiActivity extends AppCompatActivity implements AiController.Listen
             }
         });
 
-        findViewById(R.id.aiMic).setOnClickListener(v -> listen());
+        micPermission = registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
+            if (granted)
+                startRecording();
+            else
+                Toast.makeText(this, R.string.phyerma_ai_mic_denied, Toast.LENGTH_LONG).show();
+        });
+        mic = findViewById(R.id.aiMic);
+        inputHint = input.getHint();
+        mic.setOnClickListener(v -> listen());
+        mic.setOnLongClickListener(v -> {
+            editSpeechKey();
+            return true;
+        });
         send.setOnClickListener(v -> submit());
         input.setOnEditorActionListener((v, action, event) -> {
             if (action == EditorInfo.IME_ACTION_SEND) {
@@ -121,6 +143,8 @@ public class AiActivity extends AppCompatActivity implements AiController.Listen
 
     @Override
     protected void onPause() {
+        if (recorder.recording())
+            recorder.stop();
         controller.setListener(null);
         super.onPause();
     }
@@ -142,17 +166,77 @@ public class AiActivity extends AppCompatActivity implements AiController.Listen
         controller.send(this, text);
     }
 
+    //A speech key means our own recording; without one the system recognizer is tried, and a phone
+    //that has none is offered the key dialog.
     private void listen() {
+        if (recorder.recording()) {
+            recorder.stop();
+            return;
+        }
+        if (transcribing)
+            return;
+        if (AiKeyStore.hasSpeech(this)) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
+                startRecording();
+            else
+                micPermission.launch(Manifest.permission.RECORD_AUDIO);
+            return;
+        }
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.phyerma_ai_speak_prompt));
         try {
             speech.launch(intent);
         } catch (ActivityNotFoundException e) {
-            //Phones without Google services often have no recognizer to hand out, but their keyboard
-            //has a microphone key that types into the field.
-            Toast.makeText(this, R.string.phyerma_ai_no_speech, Toast.LENGTH_LONG).show();
+            editSpeechKey();
         }
+    }
+
+    private void startRecording() {
+        mic.setColorFilter(Color.RED);
+        input.setHint(R.string.phyerma_ai_recording);
+        recorder.start(pcm -> runOnUiThread(() -> recorded(pcm)));
+    }
+
+    private void recorded(short[] pcm) {
+        mic.clearColorFilter();
+        input.setHint(inputHint);
+        if (pcm == null) {
+            Toast.makeText(this, R.string.phyerma_ai_mic_failed, Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (isFinishing() || pcm.length < SpeechClient.SAMPLE_RATE / 4)
+            return;
+        transcribing = true;
+        input.setHint(R.string.phyerma_ai_transcribing);
+        byte[] wav = SpeechClient.wav(pcm, pcm.length, SpeechClient.SAMPLE_RATE);
+        String key = AiKeyStore.getSpeech(this);
+        new Thread(() -> {
+            String text = null;
+            String error = null;
+            try {
+                text = SpeechClient.transcribe(key, wav);
+            } catch (DeepSeekClient.ApiException e) {
+                error = e.status == 401 ? getString(R.string.phyerma_ai_speech_key_bad) : e.getMessage();
+            } catch (IOException e) {
+                error = getString(R.string.phyerma_ai_speech_network);
+            }
+            String heard = text;
+            String problem = error;
+            runOnUiThread(() -> {
+                transcribing = false;
+                input.setHint(inputHint);
+                if (problem != null) {
+                    Toast.makeText(this, problem, Toast.LENGTH_LONG).show();
+                } else if (heard == null || heard.isEmpty()) {
+                    Toast.makeText(this, R.string.phyerma_ai_speech_empty, Toast.LENGTH_LONG).show();
+                } else {
+                    String current = input.getText().toString();
+                    input.setText(current.isEmpty() ? heard : current + " " + heard);
+                    input.setSelection(input.getText().length());
+                }
+            });
+        }, "speech-to-text").start();
     }
 
     private void render() {
@@ -314,6 +398,26 @@ public class AiActivity extends AppCompatActivity implements AiController.Listen
                 .setNegativeButton(android.R.string.cancel, null);
         if (AiKeyStore.has(this))
             builder.setNeutralButton(R.string.phyerma_ai_key_remove, (d, w) -> AiKeyStore.clear(this));
+        builder.show();
+    }
+
+    private void editSpeechKey() {
+        EditText field = new EditText(this);
+        field.setSingleLine();
+        field.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        field.setHint("sk-…");
+        field.setText(AiKeyStore.getSpeech(this));
+        LinearLayout holder = new LinearLayout(this);
+        holder.setPadding(dp(20), dp(8), dp(20), 0);
+        holder.addView(field, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle(R.string.phyerma_ai_speech_key_title)
+                .setMessage(R.string.phyerma_ai_speech_key_message)
+                .setView(holder)
+                .setPositiveButton(R.string.phyerma_ai_key_save, (d, w) -> AiKeyStore.setSpeech(this, field.getText().toString()))
+                .setNegativeButton(android.R.string.cancel, null);
+        if (AiKeyStore.hasSpeech(this))
+            builder.setNeutralButton(R.string.phyerma_ai_key_remove, (d, w) -> AiKeyStore.clearSpeech(this));
         builder.show();
     }
 }
