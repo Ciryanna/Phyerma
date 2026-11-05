@@ -1,0 +1,43 @@
+<phyphox version="1.20" locale="en">
+  <title>Height from pressure</title>
+  <category>Phyerma</category>
+  <description>Turns the air pressure into a height above the level where the reference pressure is valid. Take the stairs or a lift and watch it change.</description>
+  <icon>HP</icon>
+  <data-containers>
+    <container size="0">p</container>
+    <container size="0">t</container>
+    <container size="0">h</container>
+    <container size="1" init="1013.25">p0</container>
+  </data-containers>
+  <input>
+    <sensor type="pressure" rate="5">
+      <output component="x">p</output>
+      <output component="t">t</output>
+    </sensor>
+  </input>
+  <analysis sleep="0.2">
+    <formula formula="44330*(1-([1]/[2])^0.1903)">
+      <input>p</input>
+      <input>p0</input>
+      <output>h</output>
+    </formula>
+  </analysis>
+  <views>
+    <view label="Height">
+      <value label="Pressure" unit="hPa" precision="2"><input>p</input></value>
+      <value label="Height" unit="m" precision="1" size="3"><input>h</input></value>
+      <edit label="Reference pressure" unit="hPa" default="1013.25"><output>p0</output></edit>
+      <graph label="Height" labelX="t" unitX="s" labelY="h" unitY="m" timeOnX="true" partialUpdate="true">
+        <input axis="x">t</input>
+        <input axis="y">h</input>
+      </graph>
+    </view>
+  </views>
+  <export>
+    <set name="Height">
+      <data name="Time (s)">t</data>
+      <data name="Pressure (hPa)">p</data>
+      <data name="Height (m)">h</data>
+    </set>
+  </export>
+</phyphox>

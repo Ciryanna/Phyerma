@@ -45,6 +45,8 @@ public final class AiSession {
     private final Backend backend;
     private final Validator validator;
     private String system;
+    //The file the model is asked to change; edit blocks are applied to it. null when creating.
+    private String base;
     private final List<String[]> history = new ArrayList<>();
 
     public AiSession(Backend backend, Validator validator, String system) {
@@ -56,6 +58,10 @@ public final class AiSession {
     //The system message carries the target experiment, so it changes when the user picks another one
     public void setSystem(String system) {
         this.system = system;
+    }
+
+    public void setBase(String xml) {
+        this.base = xml;
     }
 
     public void reset() {
@@ -79,26 +85,66 @@ public final class AiSession {
         add("user", userText);
         int fixes = 0;
         String lastProblem = null;
-        String prose = "";
         while (true) {
             String raw = backend.complete(messages());
             add("assistant", raw);
             AiReply reply = AiReply.parse(raw);
-            prose = reply.prose;
-            if (reply.xml == null)
+            String prose = reply.prose;
+            if (reply.xml == null && reply.edits.isEmpty() && !reply.truncated)
                 return new Turn(prose, null, lastProblem, fixes);
-            String problem = reply.truncated
-                    ? "Your answer was cut off before the file ended. Send the complete file again, and keep it shorter."
-                    : validator.check(reply.xml);
+
+            String xml = reply.xml;
+            String problem = null;
+            String reason = null; //the short form that is shown to the user if the fixing rounds run out
+            if (reply.truncated) {
+                reason = "The answer was cut off.";
+                problem = "Your answer was cut off before the end. Send it again, and keep it shorter.";
+            } else {
+                boolean edited = !reply.edits.isEmpty();
+                if (edited) {
+                    if (base == null) {
+                        reason = "There is no existing experiment to edit.";
+                        problem = "There is no existing experiment to edit, so edit blocks cannot be used. Send the complete file in one xml block.";
+                    } else {
+                        try {
+                            xml = AiEdits.apply(base, reply.edits);
+                        } catch (AiEdits.Failure failure) {
+                            reason = failure.getMessage();
+                            problem = failure.getMessage() + " Nothing was changed. Send corrected edit blocks, still written against the ORIGINAL file.";
+                        }
+                    }
+                }
+                if (problem == null) {
+                    String refused = validator.check(xml);
+                    //Undeclared containers are declared here; every pass fixes one name, and a file
+                    //that misses more than a dozen is not worth patching.
+                    String declared = null;
+                    for (int i = 0; i < 12; i++) {
+                        String name = ContainerRepair.undeclared(refused);
+                        String patched = name == null || name.equals(declared) ? null : ContainerRepair.declare(xml, name);
+                        if (patched == null)
+                            break;
+                        declared = name;
+                        xml = patched;
+                        refused = validator.check(xml);
+                    }
+                    if (refused != null) {
+                        reason = refused;
+                        problem = edited
+                                ? "The app could not load the experiment after applying your edits: " + refused
+                                + "\nEdits are always applied to the ORIGINAL file again, so send corrected edit blocks relative to the original (or the complete file in one xml block)."
+                                : "The app could not load that experiment: " + refused
+                                + "\nCorrect the file and send the complete corrected file in one xml block.";
+                    }
+                }
+            }
             if (problem == null)
-                return new Turn(prose, reply.xml, null, fixes);
-            lastProblem = problem;
+                return new Turn(prose, xml, null, fixes);
+            lastProblem = reason;
             if (fixes == MAX_FIXES)
-                return new Turn(prose, null, problem, fixes);
+                return new Turn(prose, null, reason, fixes);
             fixes++;
-            add("user", reply.truncated ? problem
-                    : "The app could not load that experiment: " + problem
-                    + "\nCorrect the file and send the complete corrected file in one xml block.");
+            add("user", problem);
         }
     }
 

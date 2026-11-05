@@ -1,0 +1,6 @@
+New AI tab: describe an experiment by voice or text and get a ready-to-run phyphox experiment, or ask for small changes to an existing one
+The AI checks its own result with the real file parser and fixes mistakes before showing it
+New calibration tab with device information; chosen items are added to the metadata of every export
+Export is one tap: a zip of plain CSV files
+Smooth transitions between tabs
+Tool to check experiment files: tools/check_experiments.sh

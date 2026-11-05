@@ -1,6 +1,7 @@
 package de.rwth_aachen.phyphox.ai;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -147,5 +148,83 @@ public class AiSessionTest {
         JSONArray messages = script.asked.get(1);
         assertEquals(2, messages.length());
         assertEquals("two", messages.getJSONObject(0).getString("content"));
+    }
+
+    private static final String BASE = "<phyphox>\n  <title>Old</title>\n</phyphox>";
+
+    private static String editAnswer(String search, String replace) {
+        return "Changed.\n```edit\n<<<<<<< SEARCH\n" + search + "\n=======\n" + replace + "\n>>>>>>> REPLACE\n```";
+    }
+
+    @Test
+    public void editBlocksAreAppliedToTheBaseFile() throws Exception {
+        AiSession session = new AiSession(new Script(editAnswer("<title>Old</title>", "<title>New</title>")),
+                xml -> xml.contains("<title>New</title>") ? null : "wrong", "sys");
+        session.setBase(BASE);
+        AiSession.Turn turn = session.send("rename it");
+        assertEquals(0, turn.fixes);
+        assertEquals(BASE.replace("Old", "New"), turn.xml);
+        assertEquals("Changed.", turn.prose);
+    }
+
+    @Test
+    public void editThatDoesNotMatchGoesBackToTheModel() throws Exception {
+        Script script = new Script(editAnswer("<title>Wrong</title>", "x"), editAnswer("<title>Old</title>", "<title>New</title>"));
+        AiSession session = new AiSession(script, xml -> null, "sys");
+        session.setBase(BASE);
+        AiSession.Turn turn = session.send("rename it");
+        assertEquals(1, turn.fixes);
+        assertTrue(turn.xml.contains("New"));
+        JSONArray second = script.asked.get(1);
+        String last = second.getJSONObject(second.length() - 1).getString("content");
+        assertTrue(last, last.contains("Edit 1"));
+        assertTrue(last, last.contains("ORIGINAL"));
+    }
+
+    @Test
+    public void parserRefusalAfterEditsIsCorrectedAgainstTheOriginal() throws Exception {
+        Script script = new Script(editAnswer("<title>Old</title>", "<title>Bad</title>"), editAnswer("<title>Old</title>", "<title>Good</title>"));
+        AiSession session = new AiSession(script, xml -> xml.contains("Bad") ? "title is bad" : null, "sys");
+        session.setBase(BASE);
+        AiSession.Turn turn = session.send("rename it");
+        assertEquals(1, turn.fixes);
+        assertEquals(BASE.replace("Old", "Good"), turn.xml);
+    }
+
+    @Test
+    public void userSeesTheShortReasonWhenEditsKeepFailing() throws Exception {
+        Script script = new Script(editAnswer("no", "x"), editAnswer("no", "x"), editAnswer("no", "x"));
+        AiSession session = new AiSession(script, xml -> null, "sys");
+        session.setBase(BASE);
+        AiSession.Turn turn = session.send("rename it");
+        assertNull(turn.xml);
+        assertTrue(turn.error, turn.error.startsWith("Edit 1"));
+        assertFalse(turn.error.contains("ORIGINAL"));
+    }
+
+    @Test
+    public void editsWithoutABaseAreRefused() throws Exception {
+        Script script = new Script(editAnswer("a", "b"), block("fresh"));
+        AiSession session = new AiSession(script, xml -> null, "sys");
+        AiSession.Turn turn = session.send("make something");
+        assertEquals(1, turn.fixes);
+        assertTrue(turn.xml.contains("fresh"));
+    }
+
+    @Test
+    public void completeFileStillWorksWhenModifying() throws Exception {
+        AiSession session = new AiSession(new Script(block("whole")), xml -> null, "sys");
+        session.setBase(BASE);
+        assertTrue(session.send("redo everything").xml.contains("whole"));
+    }
+
+    @Test
+    public void cutOffEditIsAskedAgain() throws Exception {
+        Script script = new Script("```edit\n<<<<<<< SEARCH\n<title>Old</title>\n=======\n<title>", editAnswer("<title>Old</title>", "<title>New</title>"));
+        AiSession session = new AiSession(script, xml -> null, "sys");
+        session.setBase(BASE);
+        AiSession.Turn turn = session.send("rename it");
+        assertEquals(1, turn.fixes);
+        assertTrue(turn.xml.contains("New"));
     }
 }

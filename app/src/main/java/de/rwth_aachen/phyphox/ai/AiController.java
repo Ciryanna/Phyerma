@@ -135,6 +135,7 @@ public final class AiController {
         } else {
             session.setSystem(system);
         }
+        session.setBase(xml);
         target = ref;
     }
 

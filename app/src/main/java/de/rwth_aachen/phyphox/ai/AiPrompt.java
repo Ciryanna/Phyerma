@@ -8,11 +8,12 @@ import android.hardware.SensorManager;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-//Builds the system message: the fixed instructions plus what is specific to this phone and to the
-//experiment the user wants changed.
+//Builds the system message: the fixed instructions and examples, then what is specific to this
+//phone and to the experiment the user wants changed.
 public final class AiPrompt {
     private AiPrompt() {}
 
@@ -35,6 +36,7 @@ public final class AiPrompt {
 
     public static String build(Context context, String targetTitle, String targetXml) throws IOException {
         StringBuilder prompt = new StringBuilder(readAsset(context, "ai/system_prompt.txt"));
+        prompt.append(examples(context));
         prompt.append("\n# This phone\n");
         SensorManager sensors = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         StringBuilder have = new StringBuilder();
@@ -56,11 +58,28 @@ public final class AiPrompt {
         if (targetXml == null) {
             prompt.append("\n# Task\nCreate a NEW experiment unless the user asks a question.\n");
         } else {
-            prompt.append("\n# Task\nThe user wants to MODIFY this existing experiment (\"").append(targetTitle)
-                    .append("\"). Return the complete modified file. This is its current file:\n```xml\n")
-                    .append(targetXml.trim()).append("\n```\n");
+            prompt.append(readAsset(context, "ai/edit_task.txt")
+                    .replace("{{TITLE}}", String.valueOf(targetTitle))
+                    .replace("{{FILE}}", targetXml.trim()));
         }
         return prompt.toString();
+    }
+
+    //Working experiments for the model to take structure and module usage from. They come before
+    //everything that varies, so the start of the prompt is the same for every request, which makes
+    //it cheap (the service caches a repeated prefix).
+    static String examples(Context context) throws IOException {
+        String[] names = context.getAssets().list("ai/examples");
+        if (names == null || names.length == 0)
+            return "";
+        Arrays.sort(names);
+        StringBuilder out = new StringBuilder();
+        out.append("\n# More working examples\n");
+        out.append("Every one of these loads and runs in this app. They show real module usage, containers, views and exports; ");
+        out.append("take their patterns, not their subject. Never put one of them in an answer unless the user asks for it.\n");
+        for (String name : names)
+            out.append("\n```xml\n").append(readAsset(context, "ai/examples/" + name).trim()).append("\n```\n");
+        return out.toString();
     }
 
     private static String readAsset(Context context, String path) throws IOException {

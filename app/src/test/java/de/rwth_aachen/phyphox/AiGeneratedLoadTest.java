@@ -8,9 +8,14 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+
+import de.rwth_aachen.phyphox.ai.ContainerRepair;
 
 //Manual harness for the AI tab's prompt: loads every .phyphox file in the directory named by the
 //environment variable PHYERMA_AI_GEN_DIR (files the model generated) through the real parser
@@ -31,7 +36,19 @@ public class AiGeneratedLoadTest {
         List<String> failures = new ArrayList<>();
         for (File f : files) {
             PhyphoxExperiment e = CorpusTestEnvironment.load(f, activity);
-            System.out.println("AIGEN " + f.getName() + " -> " + (e.loaded ? "OK" : "FAIL: " + e.message));
+            //The app declares undeclared containers by itself (ContainerRepair), so do the same here
+            String xml = new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8);
+            int declared = 0;
+            while (!e.loaded && declared < 12) {
+                String name = ContainerRepair.undeclared(e.message);
+                String patched = name == null ? null : ContainerRepair.declare(xml, name);
+                if (patched == null)
+                    break;
+                xml = patched;
+                declared++;
+                e = CorpusTestEnvironment.load(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)), activity);
+            }
+            System.out.println("AIGEN " + f.getName() + " -> " + (e.loaded ? "OK" + (declared > 0 ? " (after declaring " + declared + ")" : "") : "FAIL: " + e.message));
             if (!e.loaded)
                 failures.add(f.getName() + ": " + e.message);
         }

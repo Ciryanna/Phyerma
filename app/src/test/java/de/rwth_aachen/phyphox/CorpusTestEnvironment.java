@@ -182,6 +182,13 @@ abstract class CorpusTestEnvironment {
     //An Experiment activity backed by a simulated device that has every sensor and capability
     //the corpus needs, so that only actual parse errors can fail a file.
     static Experiment fullyEquippedActivity() {
+        return fullyEquippedActivity(false);
+    }
+
+    //withCameraKeyLists: also give the camera the tables of request and result keys that the full
+    //device metadata (a network block that sends it) reads. Off by default, as the other tests
+    //never needed it and the larger metadata slows them down enough to disturb the timing tests.
+    static Experiment fullyEquippedActivity(boolean withCameraKeyLists) {
         Application application = ApplicationProvider.getApplicationContext();
 
         Shadows.shadowOf(application).grantPermissions(
@@ -238,6 +245,11 @@ abstract class CorpusTestEnvironment {
                         .build());
         shadowCharacteristics.set(CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES,
                 new Range[]{new Range<>(15, 30)});
+        //The full device metadata (network blocks) also lists the keys the camera accepts and reports
+        if (withCameraKeyLists) {
+            shadowCharacteristics.set(new CameraCharacteristics.Key<>("android.request.availableRequestKeys", int[].class), new int[0]);
+            shadowCharacteristics.set(new CameraCharacteristics.Key<>("android.request.availableResultKeys", int[].class), new int[0]);
+        }
         Shadows.shadowOf(cameraManager).addCamera("0", characteristics);
         //The app enumerates the cameras when the experiment list loads and caches the result;
         //the depth input and the device metadata read that cache and dereference it without a

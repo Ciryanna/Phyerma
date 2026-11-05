@@ -1,0 +1,56 @@
+<phyphox version="1.20" locale="en">
+  <title>Rolling speed</title>
+  <category>Phyerma</category>
+  <description>Put the phone inside a paper roll. The gyroscope gives how fast it turns, and with the radius of the roll that gives the speed it travels.</description>
+  <icon>RS</icon>
+  <data-containers>
+    <container size="0">gyrY</container>
+    <container size="0">gyr_time</container>
+    <container size="0">v</container>
+    <container size="0">vkmh</container>
+    <container size="1" init="0.05">r</container>
+  </data-containers>
+  <input>
+    <sensor type="gyroscope" rate="25" average="true">
+      <output component="y">gyrY</output>
+      <output component="t">gyr_time</output>
+    </sensor>
+  </input>
+  <analysis sleep="0.1">
+    <formula formula="abs([1])*[2]">
+      <input>gyrY</input>
+      <input>r</input>
+      <output>v</output>
+    </formula>
+    <formula formula="[1]*3.6">
+      <input>v</input>
+      <output>vkmh</output>
+    </formula>
+  </analysis>
+  <views>
+    <view label="Speed">
+      <edit label="Roll radius" unit="m" default="0.05"><output>r</output></edit>
+      <graph label="Speed" labelX="t" unitX="s" labelY="v" unitY="m/s" timeOnX="true" partialUpdate="true">
+        <input axis="x">gyr_time</input>
+        <input axis="y">v</input>
+      </graph>
+      <graph label="Speed" labelX="t" unitX="s" labelY="v" unitY="km/h" timeOnX="true" partialUpdate="true">
+        <input axis="x">gyr_time</input>
+        <input axis="y">vkmh</input>
+      </graph>
+    </view>
+    <view label="Raw data">
+      <graph label="Gyroscope y" labelX="t" unitX="s" labelY="w" unitY="rad/s" timeOnX="true" partialUpdate="true" color="ffff00">
+        <input axis="x">gyr_time</input>
+        <input axis="y">gyrY</input>
+      </graph>
+    </view>
+  </views>
+  <export>
+    <set name="Speed">
+      <data name="Time (s)">gyr_time</data>
+      <data name="Speed (m/s)">v</data>
+      <data name="Gyroscope y (rad/s)">gyrY</data>
+    </set>
+  </export>
+</phyphox>

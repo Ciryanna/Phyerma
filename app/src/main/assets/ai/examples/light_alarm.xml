@@ -1,0 +1,55 @@
+<phyphox version="1.20" locale="en">
+  <title>Light alarm</title>
+  <category>Phyerma</category>
+  <description>Records the brightness and tells you whether it went above a limit you can set. The Clear button starts the record again.</description>
+  <icon>LA</icon>
+  <data-containers>
+    <container size="0">lux</container>
+    <container size="0">t</container>
+    <container size="1">peak</container>
+    <container size="1">exceeded</container>
+    <container size="1" init="500">limit</container>
+  </data-containers>
+  <input>
+    <sensor type="light" rate="10">
+      <output component="x">lux</output>
+      <output component="t">t</output>
+    </sensor>
+  </input>
+  <analysis sleep="0.2">
+    <max>
+      <input as="y">lux</input>
+      <output as="max">peak</output>
+    </max>
+    <if greater="true">
+      <input as="a">peak</input>
+      <input as="b">limit</input>
+      <input as="true" type="value">1</input>
+      <input as="false" type="value">0</input>
+      <output as="result">exceeded</output>
+    </if>
+  </analysis>
+  <views>
+    <view label="Light">
+      <value label="Brightness" unit="lx" precision="0" size="3"><input>lux</input></value>
+      <value label="Brightest so far" unit="lx" precision="0"><input>peak</input></value>
+      <value label="Limit passed">
+        <input>exceeded</input>
+        <map max="0.5">No</map>
+        <map min="0.5">Yes</map>
+      </value>
+      <edit label="Limit" unit="lx" default="500"><output>limit</output></edit>
+      <graph label="Brightness" labelX="t" unitX="s" labelY="E" unitY="lx" timeOnX="true" partialUpdate="true">
+        <input axis="x">t</input>
+        <input axis="y">lux</input>
+      </graph>
+      <button label="Clear"><input type="empty">lux</input><output>lux</output></button>
+    </view>
+  </views>
+  <export>
+    <set name="Light">
+      <data name="Time (s)">t</data>
+      <data name="Illuminance (lx)">lux</data>
+    </set>
+  </export>
+</phyphox>

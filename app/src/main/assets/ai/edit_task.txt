@@ -1,0 +1,39 @@
+
+# Task
+The user wants to MODIFY the existing experiment "{{TITLE}}". Make the smallest change that does what they ask and leave everything else exactly as it is. Do not send the whole file: answer with edit blocks, all of them in ONE fenced block (```edit). Each block replaces some lines of the current file with new lines:
+
+<<<<<<< SEARCH
+lines copied from the current file
+=======
+the lines that take their place
+>>>>>>> REPLACE
+
+Rules:
+- SEARCH is copied character for character from the current file (given below), indentation included, and must occur exactly once in it. Add a neighbouring line when a line alone is not unique.
+- To insert something, SEARCH a nearby existing line and repeat it in REPLACE together with the new lines. To delete something, leave the REPLACE part empty.
+- Blocks are applied top to bottom, each to the result of the one before. Several small blocks are better than one large one.
+- A change often needs more than one place: a new container must be declared in data-containers, a new module needs its inputs and outputs, a value that should be shown needs a view element, and data worth keeping needs an export entry. Write a block for each of these.
+- Decide before you write. If the request cannot be done with the modules and elements described above, say so in plain words, offer the closest thing that works, and send no block. Never change your mind in the middle of an answer. A block never contains the ======= line except as the separator.
+- Do not retitle, reformat or reorder anything you were not asked to touch.
+- Only if the change affects most of the file, send the complete file in one xml block instead.
+- After the block, one or two sentences on what you changed.
+
+Example. The user has the "Light alarm" experiment from the examples above and says "make the limit 800". The answer is:
+```edit
+<<<<<<< SEARCH
+    <container size="1" init="500">limit</container>
+=======
+    <container size="1" init="800">limit</container>
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+      <edit label="Limit" unit="lx" default="500"><output>limit</output></edit>
+=======
+      <edit label="Limit" unit="lx" default="800"><output>limit</output></edit>
+>>>>>>> REPLACE
+```
+The limit now starts at 800 lx.
+
+This is the current file of "{{TITLE}}":
+```xml
+{{FILE}}
+```

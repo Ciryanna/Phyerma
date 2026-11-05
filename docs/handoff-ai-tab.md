@@ -71,3 +71,28 @@
 3. 长按麦克风随时修改/删除语音密钥。密钥与 DeepSeek 密钥同在 `phyerma_ai` 偏好文件里，同样不进备份。
 
 验证：`SpeechClientTest`（WAV 头、multipart 上传走本地套接字、错误解析）；模拟器上走通了 授权 → 录音（按钮变红）→ 上传 → 假密钥得到服务端 401 并提示「语音服务不接受这个密钥」，说明网络和接口形状是通的。**没有验证**：用真实密钥得到转写文字（没有可用的语音密钥）；想换服务商只需改 `SpeechClient.ENDPOINT`/`MODEL`。
+
+## 9. 示例上下文与「小修小改」模式
+
+起因：只靠规则文字时，模型生成新实验约三成一次加载不了（最常见：用了没声明的容器），而用户的主要需求是对已有实验做小修小改。
+
+**提示结构**（`AiPrompt.build`）：`system_prompt.txt`（规则）→ `assets/ai/examples/*.xml`（5 个精选的、真能加载的示例：陀螺仪+edit、麦克风+fft、光传感器+if+按钮、GPS、气压→高度；纯文本单位，无 `[[占位符]]`）→ 「This phone」→ 「Task」。前面三段对每个请求都相同，DeepSeek 的前缀缓存让它们几乎免费。`AiExamplesLoadTest` 逐个用真解析器加载示例，示例写错会直接失败；`AiPromptTest` 检查前缀不随手机/任务变化。
+
+**修改模式**：目标实验的文件放进 `assets/ai/edit_task.txt`（`{{TITLE}}`/`{{FILE}}`），模型不再回完整文件，而是回 SEARCH/REPLACE 块（`<<<<<<< SEARCH … ======= … >>>>>>> REPLACE`，同一代码块里可有多个）。`AiEdits.apply` 对 `AiSession.base`（即目标文件）依次应用：先精确匹配，不行再按「去首尾空白的整行」匹配；找不到、出现多次、SEARCH 为空、块里混进分隔符都会得到一条给模型看的错误，走原有的修复循环（最多 2 次，且始终相对于**原文件**重写）。模型仍然可以回完整 xml 块（改动超过一半时）。用户最终看到的 `Turn.error` 是简短原因，不含给模型的提示语。
+`AiReply` 先查编辑块再查完整文件（编辑块里常含 `<phyphox` 行）；编辑块没收尾 = 被截断。
+
+**自动声明容器**（`ContainerRepair`）：解析器报 `Buffer "x" not defined.` 且 x 是合法标识符时，直接在 `<data-containers>` 开头补 `<container size="0">x</container>` 再检查，最多 12 次，不占用模型的修复机会。`0.5` 这种数字名字（模型忘了 `type="value"`）不处理，交还给模型。
+
+**实测**（DeepSeek，同一批 8 个新建需求 + 6 个修改需求，两轮）：新建 一次生成后加载 5/8 → 加上自动声明 8/8（两轮都是）；修改 12/14 一次成功，其余两个一个是模型把块写坏（现在被识别为 malformed 并回炉），一个是它写到一半发现做不了（累计行驶距离）。注意：「能加载」不等于「物理上对」，后者仍没人验证过。
+工具：`AiGeneratedLoadTest`（`PHYERMA_AI_GEN_DIR`）现在也会像应用一样先补声明再判定。
+
+## 10. 检查实验文件对不对
+
+`tools/check_experiments.sh [文件或文件夹 ...]` 用 app 打开文件时的同一个解析器检查 `.phyphox` 文件(模拟一台传感器齐全的手机,所以只会报真正的错误:元素写错、容器没声明、文件版本高于 app 支持等)。每个文件输出 `OK` 或解析器的原文报错;容器没声明时额外给出该怎么补的提示。
+
+- 不带参数:检查 app 自带的实验(`assets/experiments` + `assets/ai/examples`),目前 72 个通过、1 个跳过(`sensordb.phyphox` 需要真实相机元数据,模拟手机给不出,要上真机验证)。
+- 带参数:只检查你给的文件/文件夹。
+- 实现:`ExperimentFilesCheckTest`(同时作为普通单元测试跑,保证自带实验不会被改坏)。报告也写在 `app/build/experiment-check-*.txt`。
+- 需要 `JAVA_HOME`(Android Studio 的 jbr 即可)。
+- 上游语料(`phyphox-docs/corpus`)的一致性测试需要 `phyphox-docs` 仓库放在本仓库旁边;目前机器上没有它,那几组测试是跳过的。
+- 只检查"能不能加载",不检查物理含义。以后有自己的配置格式时,在这个入口上加自己的规则。
